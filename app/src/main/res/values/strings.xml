@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">KanDigNas</string>
+    <string name="auth_title">Kantin Digital Nasional</string>
+    <string name="build">© Innovanesia 2022\nBuild 0.2.80.internal_debug.220929–0201</string>
+    <string name="login">Masuk</string>
+    <string name="register">Daftar</string>
+    <string name="logout">Keluar</string>
+    <string name="username">Username</string>
+    <string name="password">Kata Sandi</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="kantin">KANTIN</string>
+    <string name="saldo">Saldo</string>
+    <string name="koperasi">KOPERASI</string>
+    <string name="siswa">SISWA</string>
+</resources>
