@@ -59,14 +59,13 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="8dp"
-                android:text="Hai, Samuel Deviko Kelvin Setiawan!"
                 android:textColor="@color/black"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toStartOf="@+id/topup_button"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="HardcodedText" />
+                tools:text="Hai, Samuel Deviko Kelvin Setiawan!" />
 
             <TextView
                 android:id="@+id/balance_text"
@@ -96,7 +95,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="4,500,000"
                 android:textColor="@color/grey"
                 android:textSize="16sp"
                 android:textStyle="bold"
@@ -104,7 +102,7 @@
                 app:layout_constraintEnd_toEndOf="@+id/greetings_text"
                 app:layout_constraintStart_toEndOf="@+id/coins_icon"
                 app:layout_constraintTop_toTopOf="@+id/coins_icon"
-                tools:ignore="HardcodedText" />
+                tools:text="4,500,000" />
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/topup_button"

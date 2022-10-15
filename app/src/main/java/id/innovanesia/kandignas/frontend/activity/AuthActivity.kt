@@ -10,10 +10,15 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QueryDocumentSnapshot
 import id.innovanesia.kandignas.databinding.ActivityAuthBinding
+import id.innovanesia.kandignas.frontend.activity.kantin.KantinMenuActivity
+import id.innovanesia.kandignas.frontend.activity.koperasi.KoperasiMenuActivity
+import id.innovanesia.kandignas.frontend.activity.siswa.SiswaMenuActivity
 
 class AuthActivity : AppCompatActivity()
 {
@@ -30,7 +35,7 @@ class AuthActivity : AppCompatActivity()
         setContentView(binds.root)
 
         sharedPreference = getSharedPreferences("KanDigNas", Context.MODE_PRIVATE)
-        /*if (sharedPreference.getString(keyType, null) != null)
+        if (sharedPreference.getString(keyType, null) != null)
         {
             if (sharedPreference.getString(keyType, null) == "kantin")
             {
@@ -42,61 +47,74 @@ class AuthActivity : AppCompatActivity()
                 startActivity(Intent(this, KoperasiMenuActivity::class.java))
                 finish()
             }
-            else if (sharedPreference.getString(keyType, null) == "siswa")
+            else if (sharedPreference.getString(keyType, null) == "siswa"
+                    || sharedPreference.getString(keyType, null) == "general")
             {
                 startActivity(Intent(this, SiswaMenuActivity::class.java))
                 finish()
             }
-        }*/
+        }
 
         binds.apply {
             loginButton.setOnClickListener {
+                val username = usernameInput.text.toString()
+                var data: QueryDocumentSnapshot? = null
                 db.collection("users").get()
                     .addOnCompleteListener {
                         if (it.isSuccessful)
                         {
-                            val result = it.result
-                            for (docs in result)
+                            for (docs in it.result)
                             {
-                                if (usernameInput.text.toString() == docs.id)
+                                if (username == docs.data["username"])
                                 {
-                                    Log.d("User ada!", docs.id)
-                                }
-                                else if (usernameInput.text.toString() != docs.id)
-                                {
-                                    Log.d("Error", "User tidak ada!")
+                                    data = docs
                                 }
                             }
                         }
+                        if (data != null)
+                        {
+                            if (passwordInput.text.toString() == data!!.data["password"])
+                            {
+                                val commit: SharedPreferences.Editor = sharedPreference.edit()
+                                commit.putString(keyUser, data!!.id)
+                                commit.putString(keyType, data!!.data["account_type"].toString())
+                                commit.apply()
+                                if (sharedPreference.getString(keyType, null) == "kantin")
+                                {
+                                    Toast.makeText(
+                                        this@AuthActivity, "Berhasil masuk!", Toast.LENGTH_SHORT
+                                    ).show()
+                                    startActivity(Intent(this@AuthActivity, KantinMenuActivity::class.java))
+                                    finish()
+                                }
+                                else if (sharedPreference.getString(keyType, null) == "koperasi")
+                                {
+                                    Toast.makeText(
+                                        this@AuthActivity, "Berhasil masuk!", Toast.LENGTH_SHORT
+                                    ).show()
+                                    startActivity(Intent(this@AuthActivity, KoperasiMenuActivity::class.java))
+                                    finish()
+                                }
+                                else if (sharedPreference.getString(keyType, null) == "siswa"
+                                    || sharedPreference.getString(keyType, null) == "general")
+                                {
+                                    Toast.makeText(
+                                        this@AuthActivity, "Berhasil masuk!", Toast.LENGTH_SHORT
+                                    ).show()
+                                    startActivity(Intent(this@AuthActivity, SiswaMenuActivity::class.java))
+                                    finish()
+                                }
+                            }
+                            else
+                                Snackbar.make(
+                                    binds.root,
+                                    "Username atau kata sandi salah!",
+                                    Snackbar.LENGTH_SHORT
+                                ).show()
+                        }
+                        else
+                            Log.d("ERR404", "User tidak ada!")
                     }
-                /*val commit: SharedPreferences.Editor = sharedPreference.edit()
-                                commit.putString(keyUser, documents.id)
-                                commit.putString(keyType, documents.data["account_type"].toString())
-                                commit.apply()*/
-                /*if (sharedPreference.getString(keyType, null) == "kantin")
-                {
-                    Toast.makeText(
-                        this@AuthActivity, "Berhasil masuk!", Toast.LENGTH_SHORT
-                    ).show()
-                    startActivity(Intent(this@AuthActivity, KantinMenuActivity::class.java))
-                    finish()
-                }
-                else if (sharedPreference.getString(keyType, null) == "koperasi")
-                {
-                    Toast.makeText(
-                        this@AuthActivity, "Berhasil masuk!", Toast.LENGTH_SHORT
-                    ).show()
-                    startActivity(Intent(this@AuthActivity, KoperasiMenuActivity::class.java))
-                    finish()
-                }
-                else if (sharedPreference.getString(keyType, null) == "siswa")
-                {
-                    Toast.makeText(
-                        this@AuthActivity, "Berhasil masuk!", Toast.LENGTH_SHORT
-                    ).show()
-                    startActivity(Intent(this@AuthActivity, SiswaMenuActivity::class.java))
-                    finish()
-                }
                 if (usernameInput.text.toString() == "" || passwordInput.text.toString() == "")
                 {
                     Snackbar.make(
@@ -104,7 +122,7 @@ class AuthActivity : AppCompatActivity()
                         "Gagal untuk masuk.\nMohon periksa kembali!",
                         Snackbar.LENGTH_SHORT
                     ).show()
-                }*/
+                }
             }
 
             registerButton.setOnClickListener {
