@@ -1,14 +1,22 @@
 package id.innovanesia.kandignas.frontend.activity.features
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
+import android.graphics.Rect
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
+import android.view.MotionEvent
+import android.view.View
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.google.firebase.firestore.FirebaseFirestore
 import id.innovanesia.kandignas.R
 import id.innovanesia.kandignas.databinding.ActivitySelectNominalBinding
 import id.innovanesia.kandignas.frontend.activity.koperasi.KoperasiMenuActivity
@@ -17,30 +25,56 @@ import id.innovanesia.kandignas.frontend.activity.siswa.SiswaMenuActivity
 class SelectNominalActivity : AppCompatActivity()
 {
     private lateinit var binds: ActivitySelectNominalBinding
+    private lateinit var sharedPreference: SharedPreferences
+    private val keyUser = "key.user_name"
+    private val db = FirebaseFirestore.getInstance()
 
     companion object
     {
-        private const val API = "API"
         private const val ACTIVITY = "ACTIVITY"
+        private const val USERNAME = "USERNAME"
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
         binds = ActivitySelectNominalBinding.inflate(layoutInflater)
         setContentView(binds.root)
-
-        val userApi = intent.getStringExtra(API)
         val activity = intent.getStringExtra(ACTIVITY)
+        val username = intent.getStringExtra(USERNAME)!!
+        var userbalance: Int? = null
+        var targetbalance: Int? = null
 
-        Log.d("User API", userApi.toString())
-        Log.d("Activity type", activity.toString())
+        sharedPreference = getSharedPreferences("KanDigNas", Context.MODE_PRIVATE)
+
+        val user = sharedPreference.getString(keyUser, null)!!
 
         binds.apply {
             setSupportActionBar(toolbar)
             toolbar.setNavigationOnClickListener {
                 finish()
             }
+
+            db.collection("users").document(user).get()
+                .addOnSuccessListener {
+                    userbalance = it.data?.get("balance").toString().toInt()
+                }
+
+            db.collection("users").document(username).get()
+                .addOnSuccessListener {
+                    targetbalance = it.data?.get("balance").toString().toInt()
+                    namaField.text = it.data?.get("fullname").toString()
+                    usernameField.text = it.data?.get("username").toString()
+                    if (it.data?.get("account_type").toString() == "siswa")
+                        typeField.text = "Siswa"
+                    else if (it.data?.get("account_type").toString() == "umum")
+                        typeField.text = "Umum"
+                    else if (it.data?.get("account_type").toString() == "kantin")
+                        typeField.text = "Kantin"
+                    else if (it.data?.get("account_type").toString() == "koperasi")
+                        typeField.text = "Koperasi"
+                }
 
             setNominalButton()
 
@@ -114,8 +148,17 @@ class SelectNominalActivity : AppCompatActivity()
                     okText.alpha = 1F
 
                     okButton.setOnClickListener {
+                        db.collection("users").document(username)
+                            .update("balance", targetbalance?.plus(nominalInput.text.toString().toInt()))
                         if (activity == "koperasi")
                         {
+                            db.collection("users").document(user)
+                                .update("balance", nominalInput.text.toString().toInt())
+                            Toast.makeText(
+                                this@SelectNominalActivity,
+                                "Saldo sukses ditambahkan!",
+                                Toast.LENGTH_SHORT
+                            ).show()
                             startActivity(
                                 Intent(
                                     this@SelectNominalActivity,
@@ -126,6 +169,13 @@ class SelectNominalActivity : AppCompatActivity()
                         }
                         else if (activity == "siswa")
                         {
+                            db.collection("users").document(user)
+                                .update("balance", userbalance?.minus(nominalInput.text.toString().toInt()))
+                            Toast.makeText(
+                                this@SelectNominalActivity,
+                                "Transfer sukses!",
+                                Toast.LENGTH_SHORT
+                            ).show()
                             startActivity(
                                 Intent(
                                     this@SelectNominalActivity,
@@ -178,7 +228,7 @@ class SelectNominalActivity : AppCompatActivity()
     {
         binds.apply {
             fiveKNominal.setOnClickListener {
-                nominalInput.setText("5,000")
+                nominalInput.setText("5000")
                 fiveKNominal.setCardBackgroundColor(
                     ContextCompat.getColor(
                         applicationContext,
@@ -224,7 +274,7 @@ class SelectNominalActivity : AppCompatActivity()
             }
 
             tenKNominal.setOnClickListener {
-                nominalInput.setText("10,000")
+                nominalInput.setText("10000")
                 fiveKNominal.setCardBackgroundColor(
                     ContextCompat.getColor(
                         applicationContext,
@@ -270,7 +320,7 @@ class SelectNominalActivity : AppCompatActivity()
             }
 
             twentyKNominal.setOnClickListener {
-                nominalInput.setText("20,000")
+                nominalInput.setText("20000")
                 fiveKNominal.setCardBackgroundColor(
                     ContextCompat.getColor(
                         applicationContext,
@@ -316,7 +366,7 @@ class SelectNominalActivity : AppCompatActivity()
             }
 
             thirtyfiveKNominal.setOnClickListener {
-                nominalInput.setText("35,000")
+                nominalInput.setText("35000")
                 fiveKNominal.setCardBackgroundColor(
                     ContextCompat.getColor(
                         applicationContext,
@@ -362,7 +412,7 @@ class SelectNominalActivity : AppCompatActivity()
             }
 
             fiftyKNominal.setOnClickListener {
-                nominalInput.setText("50,000")
+                nominalInput.setText("50000")
                 fiveKNominal.setCardBackgroundColor(
                     ContextCompat.getColor(
                         applicationContext,
@@ -408,7 +458,7 @@ class SelectNominalActivity : AppCompatActivity()
             }
 
             oneHundredKNominal.setOnClickListener {
-                nominalInput.setText("100,000")
+                nominalInput.setText("100000")
                 fiveKNominal.setCardBackgroundColor(
                     ContextCompat.getColor(
                         applicationContext,
@@ -453,5 +503,26 @@ class SelectNominalActivity : AppCompatActivity()
                 oneHundredK.setTextColor(ContextCompat.getColor(applicationContext, R.color.white))
             }
         }
+    }
+
+    override fun dispatchTouchEvent(event: MotionEvent): Boolean
+    {
+        if (event.action == MotionEvent.ACTION_DOWN)
+        {
+            val v: View? = currentFocus
+            if (v is EditText)
+            {
+                val outRect = Rect()
+                v.getGlobalVisibleRect(outRect)
+                if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt()))
+                {
+                    v.clearFocus()
+                    val imm: InputMethodManager =
+                        getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0)
+                }
+            }
+        }
+        return super.dispatchTouchEvent(event)
     }
 }

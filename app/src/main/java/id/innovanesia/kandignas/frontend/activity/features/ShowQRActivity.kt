@@ -82,9 +82,9 @@ class ShowQRActivity : AppCompatActivity()
         db.collection("users").document(username).get()
             .addOnSuccessListener {
                 binds.apply {
-                    if (it.data?.get("nisn") == null)
+                    if (it.data?.get("nisn") == "")
                     {
-                        idText.text = it.data?.get("nik")
+                        idText.text = it.data?.get("nik").toString()
                     }
                     else
                     {

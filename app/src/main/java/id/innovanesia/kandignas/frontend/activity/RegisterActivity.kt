@@ -12,6 +12,8 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.firestore.FirebaseFirestore
+import id.innovanesia.kandignas.backend.models.UsersData
 import id.innovanesia.kandignas.databinding.AccountTypeViewBinding
 import id.innovanesia.kandignas.databinding.GeneralAccountFormBinding
 import id.innovanesia.kandignas.databinding.StudentsAccountFormBinding
@@ -23,6 +25,7 @@ class RegisterActivity : AppCompatActivity()
     private lateinit var studentBinds: StudentsAccountFormBinding
     private var general: Boolean = false
     private var student: Boolean = false
+    private val db = FirebaseFirestore.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -168,30 +171,50 @@ class RegisterActivity : AppCompatActivity()
             }
 
             submitButton.setOnClickListener {
-                if (nisnInput.text!!.isEmpty() || nikInput.text!!.isEmpty()
-                    || namaInput.text!!.isEmpty() || nisInput.text!!.isEmpty()
-                    || kontakInput.text!!.isEmpty() || emailInput.text!!.isEmpty()
-                    || usernameInput.text!!.isEmpty() || passwordInput.text!!.isEmpty()
-                    || confirmpassInput.text!!.isEmpty()
-                )
-                {
+                if (namaInput.text!!.isEmpty() || kontakInput.text!!.isEmpty()
+                    || emailInput.text!!.isEmpty() || usernameInput.text!!.isEmpty()
+                    || passwordInput.text!!.isEmpty() || confirmpassInput.text!!.isEmpty()
+                    || nisnInput.text!!.isEmpty() || nisInput.text!!.isEmpty())
                     Snackbar.make(studentBinds.root, "Mohon isi semua data!", Snackbar.LENGTH_SHORT)
                         .show()
-                }
                 else if (passwordInput.text.toString() != confirmpassInput.text.toString())
                 {
                     Snackbar.make(
                         studentBinds.root,
                         "Kata sandi tidak sama!",
                         Snackbar.LENGTH_SHORT
-                    )
-                        .show()
+                    ).show()
                 }
                 else
                 {
-                    Toast.makeText(this@RegisterActivity, "Registrasi sukses!", Toast.LENGTH_SHORT)
-                        .show()
-                    finish()
+                    val user = UsersData(
+                        "siswa",
+                        0,
+                        emailInput.text.toString(),
+                        namaInput.text.toString(),
+                        nikInput.text.toString(),
+                        nisInput.text.toString(),
+                        nisnInput.text.toString(),
+                        passwordInput.text.toString(),
+                        kontakInput.text.toString(),
+                        usernameInput.text.toString()
+                    )
+                    db.collection("users").document(usernameInput.text.toString())
+                        .set(user)
+                        .addOnSuccessListener {
+                            Log.d("Data insert", "Success!")
+                            Toast.makeText(this@RegisterActivity, "Registrasi sukses!", Toast.LENGTH_SHORT)
+                                .show()
+                            finish()
+                        }
+                        .addOnFailureListener {
+                            Log.e("Data insert", "Failed!")
+                            Snackbar.make(
+                                studentBinds.root,
+                                "Registrasi gagal",
+                                Snackbar.LENGTH_SHORT
+                            ).show()
+                        }
                 }
             }
 

@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import com.denzcoskun.imageslider.models.SlideModel
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.FirebaseFirestore
 import id.innovanesia.kandignas.R
 import id.innovanesia.kandignas.databinding.ActivitySiswaMenuBinding
@@ -41,17 +42,21 @@ class SiswaMenuActivity : AppCompatActivity()
         setContentView(binds.root)
 
         sharedPreference = getSharedPreferences("KanDigNas", Context.MODE_PRIVATE)
-        val username = sharedPreference.getString(keyUser, null)
+        val username = sharedPreference.getString(keyUser, null)!!
 
         binds.apply {
             setSupportActionBar(toolbar)
 
             if (sharedPreference.getString(keyType, null) == "siswa")
                 toolbar.title = "Siswa"
-            else if (sharedPreference.getString(keyType, null) == "general")
+            else if (sharedPreference.getString(keyType, null) == "umum")
                 toolbar.title = "Umum"
 
-            getDB(username!!)
+            getDB(username)
+
+            swipeRefreshLayout.setOnRefreshListener {
+                getDB(username)
+            }
 
             setNews()
 
@@ -138,5 +143,14 @@ class SiswaMenuActivity : AppCompatActivity()
                     balanceAmount.text = format.format(it.data?.get("balance"))
                 }
             }
+            .addOnFailureListener {
+                Snackbar.make(
+                    binds.root,
+                    "Something wrong, please try again!",
+                    Snackbar.LENGTH_SHORT
+                ).show()
+                it.printStackTrace()
+            }
+        binds.swipeRefreshLayout.isRefreshing = false
     }
 }

@@ -5,7 +5,6 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Rect
 import android.os.Bundle
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -48,7 +47,7 @@ class AuthActivity : AppCompatActivity()
                 finish()
             }
             else if (sharedPreference.getString(keyType, null) == "siswa"
-                    || sharedPreference.getString(keyType, null) == "general")
+                    || sharedPreference.getString(keyType, null) == "umum")
             {
                 startActivity(Intent(this, SiswaMenuActivity::class.java))
                 finish()
@@ -96,7 +95,7 @@ class AuthActivity : AppCompatActivity()
                                     finish()
                                 }
                                 else if (sharedPreference.getString(keyType, null) == "siswa"
-                                    || sharedPreference.getString(keyType, null) == "general")
+                                    || sharedPreference.getString(keyType, null) == "umum")
                                 {
                                     Toast.makeText(
                                         this@AuthActivity, "Berhasil masuk!", Toast.LENGTH_SHORT
@@ -113,7 +112,11 @@ class AuthActivity : AppCompatActivity()
                                 ).show()
                         }
                         else
-                            Log.d("ERR404", "User tidak ada!")
+                            Snackbar.make(
+                                binds.root,
+                                "Username tidak ditemukan!",
+                                Snackbar.LENGTH_SHORT
+                            ).show()
                     }
                 if (usernameInput.text.toString() == "" || passwordInput.text.toString() == "")
                 {
