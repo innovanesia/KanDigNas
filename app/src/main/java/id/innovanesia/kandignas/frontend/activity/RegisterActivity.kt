@@ -13,7 +13,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.FirebaseFirestore
-import id.innovanesia.kandignas.backend.models.UsersData
+import id.innovanesia.kandignas.backend.models.Users
 import id.innovanesia.kandignas.databinding.AccountTypeViewBinding
 import id.innovanesia.kandignas.databinding.GeneralAccountFormBinding
 import id.innovanesia.kandignas.databinding.StudentsAccountFormBinding
@@ -187,7 +187,7 @@ class RegisterActivity : AppCompatActivity()
                 }
                 else
                 {
-                    val user = UsersData(
+                    val user = Users(
                         "siswa",
                         0,
                         emailInput.text.toString(),

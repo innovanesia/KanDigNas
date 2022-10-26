@@ -24,337 +24,398 @@
         app:titleTextAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
         app:titleTextColor="@color/black" />
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/information_card"
+    <ScrollView
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="16dp"
-        app:cardBackgroundColor="@color/white"
-        app:cardElevation="8dp"
-        app:cardCornerRadius="8dp"
-        app:strokeColor="@color/black"
-        app:strokeWidth="1dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/ok_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
-        <LinearLayout
-            android:id="@+id/detail_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/information_card"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="24dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="2dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:strokeColor="@color/black"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:id="@+id/detail_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/information_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="4dp"
+                        android:text="Informasi Pengguna"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        tools:ignore="HardcodedText" />
+
+                    <View
+                        android:id="@+id/divider_title_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:layout_marginBottom="4dp"
+                        android:background="@color/light_grey" />
+
+                    <LinearLayout
+                        android:id="@+id/nama_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="8dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/nama_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="Nama"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            tools:ignore="HardcodedText" />
+
+                        <TextView
+                            android:id="@+id/nama_field"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:textAlignment="textEnd"
+                            android:textColor="@color/black"
+                            tools:text="Samuel Deviko Kelvin Setiawan" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/username_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="8dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/username_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="Username"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            tools:ignore="HardcodedText" />
+
+                        <TextView
+                            android:id="@+id/username_field"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:textAlignment="textEnd"
+                            android:textColor="@color/black"
+                            tools:text="devikokelvin" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/account_type_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/type_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="Tipe Akun"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            tools:ignore="HardcodedText" />
+
+                        <TextView
+                            android:id="@+id/type_field"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:textAlignment="textEnd"
+                            android:textColor="@color/black"
+                            tools:text="Umum" />
+                    </LinearLayout>
+
+                    <View
+                        android:id="@+id/divider_info"
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:layout_marginTop="8dp"
+                        android:background="@color/light_grey" />
+
+                    <LinearLayout
+                        android:id="@+id/your_balance_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="8dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/your_balance_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Saldo Anda"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            tools:ignore="HardcodedText" />
+
+                        <TextView
+                            android:id="@+id/your_balance_field"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:textAlignment="textEnd"
+                            android:textColor="@color/blue"
+                            android:textStyle="bold"
+                            tools:ignore="TextContrastCheck"
+                            tools:text="Rp 100,000" />
+                    </LinearLayout>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
             <TextView
-                android:id="@+id/information_title"
-                android:layout_width="wrap_content"
+                android:id="@+id/selectamount_text"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:textSize="18sp"
-                android:textStyle="bold"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginEnd="16dp"
+                android:text="Masukan nominal"
                 android:textColor="@color/black"
-                android:text="Informasi Pengguna"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/information_card"
                 tools:ignore="HardcodedText" />
 
-            <LinearLayout
-                android:id="@+id/nama_content"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="8dp"
-                android:orientation="horizontal">
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/fiveK_nominal"
+                android:layout_width="100dp"
+                android:layout_height="50dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="0dp"
+                app:layout_constraintBottom_toBottomOf="@+id/tenK_nominal"
+                app:layout_constraintEnd_toStartOf="@+id/tenK_nominal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tenK_nominal"
+                app:strokeColor="@color/blue"
+                app:strokeWidth="3dp">
 
                 <TextView
-                    android:id="@+id/nama_text"
+                    android:id="@+id/fiveK"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="Nama"
-                    android:textColor="@color/black"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Rp 5,000"
+                    android:textColor="@color/blue"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    tools:ignore="HardcodedText" />
+                    tools:ignore="HardcodedText,TextContrastCheck" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/tenK_nominal"
+                android:layout_width="100dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="16dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="0dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/selectamount_text"
+                app:strokeColor="@color/blue"
+                app:strokeWidth="3dp">
 
                 <TextView
-                    android:id="@+id/nama_field"
+                    android:id="@+id/tenK"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:textAlignment="textEnd"
-                    android:textColor="@color/black"
-                    tools:text="Samuel Deviko Kelvin Setiawan" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/username_content"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="8dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/username_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="Username"
-                    android:textColor="@color/black"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Rp 10,000"
+                    android:textColor="@color/blue"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    tools:ignore="HardcodedText" />
+                    tools:ignore="HardcodedText,TextContrastCheck" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/twentyK_nominal"
+                android:layout_width="100dp"
+                android:layout_height="50dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="0dp"
+                app:layout_constraintBottom_toBottomOf="@+id/tenK_nominal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tenK_nominal"
+                app:layout_constraintTop_toTopOf="@+id/tenK_nominal"
+                app:strokeColor="@color/blue"
+                app:strokeWidth="3dp">
 
                 <TextView
-                    android:id="@+id/username_field"
+                    android:id="@+id/twentyK"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:textAlignment="textEnd"
-                    android:textColor="@color/black"
-                    tools:text="devikokelvin" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/account_type_content"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/type_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="Tipe Akun"
-                    android:textColor="@color/black"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Rp 20,000"
+                    android:textColor="@color/blue"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    tools:ignore="HardcodedText" />
+                    tools:ignore="HardcodedText,TextContrastCheck" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/thirtyfiveK_nominal"
+                android:layout_width="100dp"
+                android:layout_height="50dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="0dp"
+                app:layout_constraintBottom_toBottomOf="@+id/fiftyK_nominal"
+                app:layout_constraintEnd_toStartOf="@+id/fiftyK_nominal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/fiftyK_nominal"
+                app:strokeColor="@color/blue"
+                app:strokeWidth="3dp">
 
                 <TextView
-                    android:id="@+id/type_field"
+                    android:id="@+id/thirtyfiveK"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:textAlignment="textEnd"
-                    android:textColor="@color/black"
-                    tools:text="Umum" />
-            </LinearLayout>
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Rp 35,000"
+                    android:textColor="@color/blue"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    tools:ignore="HardcodedText,TextContrastCheck" />
+            </com.google.android.material.card.MaterialCardView>
 
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/fiftyK_nominal"
+                android:layout_width="100dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="16dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="0dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tenK_nominal"
+                app:strokeColor="@color/blue"
+                app:strokeWidth="3dp">
 
-    <TextView
-        android:id="@+id/selectamount_text"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="32dp"
-        android:text="Masukan nominal"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/information_card"
-        tools:ignore="HardcodedText" />
+                <TextView
+                    android:id="@+id/fiftyK"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Rp 50,000"
+                    android:textColor="@color/blue"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    tools:ignore="HardcodedText,TextContrastCheck" />
+            </com.google.android.material.card.MaterialCardView>
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/fiveK_nominal"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
-        app:cardBackgroundColor="@color/white"
-        app:cardCornerRadius="10dp"
-        app:cardElevation="0dp"
-        app:layout_constraintBottom_toBottomOf="@+id/tenK_nominal"
-        app:layout_constraintEnd_toStartOf="@+id/tenK_nominal"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tenK_nominal"
-        app:strokeColor="@color/blue"
-        app:strokeWidth="3dp">
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/oneHundredK_nominal"
+                android:layout_width="100dp"
+                android:layout_height="50dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="0dp"
+                app:layout_constraintBottom_toBottomOf="@+id/fiftyK_nominal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/fiftyK_nominal"
+                app:layout_constraintTop_toTopOf="@+id/fiftyK_nominal"
+                app:strokeColor="@color/blue"
+                app:strokeWidth="3dp">
 
-        <TextView
-            android:id="@+id/fiveK"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Rp 5,000"
-            android:textColor="@color/blue"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            tools:ignore="HardcodedText,TextContrastCheck" />
-    </com.google.android.material.card.MaterialCardView>
+                <TextView
+                    android:id="@+id/oneHundredK"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Rp 100,000"
+                    android:textColor="@color/blue"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    tools:ignore="HardcodedText,TextContrastCheck" />
+            </com.google.android.material.card.MaterialCardView>
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/tenK_nominal"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="24dp"
-        app:cardBackgroundColor="@color/white"
-        app:cardCornerRadius="10dp"
-        app:cardElevation="0dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/selectamount_text"
-        app:strokeColor="@color/blue"
-        app:strokeWidth="3dp">
+            <TextView
+                android:id="@+id/rp_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="32dp"
+                android:text="Rp."
+                android:textColor="@color/black"
+                android:textSize="24sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/thirtyfiveK_nominal"
+                tools:ignore="HardcodedText" />
 
-        <TextView
-            android:id="@+id/tenK"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Rp 10,000"
-            android:textColor="@color/blue"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            tools:ignore="HardcodedText,TextContrastCheck" />
-    </com.google.android.material.card.MaterialCardView>
+            <EditText
+                android:id="@+id/nominal_input"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:hint="0"
+                android:inputType="number"
+                android:textColor="@color/black"
+                android:textColorHint="#A1887F"
+                android:textSize="24sp"
+                app:layout_constraintBottom_toBottomOf="@+id/rp_text"
+                app:layout_constraintEnd_toEndOf="@+id/fiftyK_nominal"
+                app:layout_constraintStart_toEndOf="@+id/rp_text"
+                app:layout_constraintTop_toTopOf="@+id/rp_text"
+                tools:ignore="Autofill,HardcodedText,LabelFor,TextContrastCheck" />
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/twentyK_nominal"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
-        app:cardBackgroundColor="@color/white"
-        app:cardCornerRadius="10dp"
-        app:cardElevation="0dp"
-        app:layout_constraintBottom_toBottomOf="@+id/tenK_nominal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tenK_nominal"
-        app:layout_constraintTop_toTopOf="@+id/tenK_nominal"
-        app:strokeColor="@color/blue"
-        app:strokeWidth="3dp">
-
-        <TextView
-            android:id="@+id/twentyK"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Rp 20,000"
-            android:textColor="@color/blue"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            tools:ignore="HardcodedText,TextContrastCheck" />
-    </com.google.android.material.card.MaterialCardView>
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/thirtyfiveK_nominal"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
-        app:cardBackgroundColor="@color/white"
-        app:cardCornerRadius="10dp"
-        app:cardElevation="0dp"
-        app:layout_constraintBottom_toBottomOf="@+id/fiftyK_nominal"
-        app:layout_constraintEnd_toEndOf="@+id/fiveK_nominal"
-        app:layout_constraintStart_toStartOf="@+id/fiveK_nominal"
-        app:layout_constraintTop_toTopOf="@+id/fiftyK_nominal"
-        app:strokeColor="@color/blue"
-        app:strokeWidth="3dp">
-
-        <TextView
-            android:id="@+id/thirtyfiveK"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Rp 35,000"
-            android:textColor="@color/blue"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            tools:ignore="HardcodedText,TextContrastCheck" />
-    </com.google.android.material.card.MaterialCardView>
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/fiftyK_nominal"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="16dp"
-        app:cardBackgroundColor="@color/white"
-        app:cardCornerRadius="10dp"
-        app:cardElevation="0dp"
-        app:layout_constraintEnd_toEndOf="@+id/tenK_nominal"
-        app:layout_constraintStart_toStartOf="@+id/tenK_nominal"
-        app:layout_constraintTop_toBottomOf="@+id/tenK_nominal"
-        app:strokeColor="@color/blue"
-        app:strokeWidth="3dp">
-
-        <TextView
-            android:id="@+id/fiftyK"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Rp 50,000"
-            android:textColor="@color/blue"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            tools:ignore="HardcodedText,TextContrastCheck" />
-    </com.google.android.material.card.MaterialCardView>
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/oneHundredK_nominal"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
-        app:cardBackgroundColor="@color/white"
-        app:cardCornerRadius="10dp"
-        app:cardElevation="0dp"
-        app:layout_constraintBottom_toBottomOf="@+id/fiftyK_nominal"
-        app:layout_constraintEnd_toEndOf="@+id/twentyK_nominal"
-        app:layout_constraintStart_toStartOf="@+id/twentyK_nominal"
-        app:layout_constraintTop_toTopOf="@+id/fiftyK_nominal"
-        app:strokeColor="@color/blue"
-        app:strokeWidth="3dp">
-
-        <TextView
-            android:id="@+id/oneHundredK"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Rp 100,000"
-            android:textColor="@color/blue"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            tools:ignore="HardcodedText,TextContrastCheck" />
-    </com.google.android.material.card.MaterialCardView>
-
-    <TextView
-        android:id="@+id/rp_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Rp."
-        android:textColor="@color/black"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="@+id/nominal_input"
-        app:layout_constraintStart_toStartOf="@+id/selectamount_text"
-        app:layout_constraintTop_toTopOf="@+id/nominal_input"
-        tools:ignore="HardcodedText" />
-
-    <EditText
-        android:id="@+id/nominal_input"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="32dp"
-        android:hint="0"
-        android:inputType="number"
-        android:textColor="@color/black"
-        android:textColorHint="#A1887F"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/rp_text"
-        app:layout_constraintTop_toBottomOf="@+id/fiftyK_nominal"
-        tools:ignore="Autofill,HardcodedText,LabelFor,TextContrastCheck" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/ok_button"
         android:layout_width="125dp"
         android:layout_height="50dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="32dp"
         app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="25dp"
         app:cardElevation="8dp"
-        app:layout_constraintEnd_toEndOf="@+id/nominal_input"
-        app:layout_constraintTop_toBottomOf="@+id/nominal_input">
+        app:layout_constraintBottom_toTopOf="@+id/build_text"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <TextView
             android:id="@+id/ok_text"

@@ -1,7 +1,6 @@
 package id.innovanesia.kandignas.frontend.activity.features
 
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
@@ -11,7 +10,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.budiyev.android.codescanner.*
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.firestore.FirebaseFirestore
 import id.innovanesia.kandignas.databinding.ActivityScanQrBinding
 import id.innovanesia.kandignas.frontend.activity.koperasi.KoperasiMenuActivity
 import id.innovanesia.kandignas.frontend.activity.siswa.SiswaMenuActivity
@@ -20,8 +18,6 @@ class ScanQRActivity : AppCompatActivity()
 {
     private lateinit var binds: ActivityScanQrBinding
     private lateinit var codeScanner: CodeScanner
-    private val db = FirebaseFirestore.getInstance()
-    private lateinit var sharedPreference: SharedPreferences
 
     companion object
     {

@@ -1,6 +1,6 @@
 package id.innovanesia.kandignas.backend.models
 
-data class UsersData(
+data class Users(
     val account_type: String,
     val balance: Int,
     val email: String,
