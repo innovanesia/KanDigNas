@@ -156,7 +156,7 @@ class RegisterActivity : AppCompatActivity()
                 }
                 else
                 {
-                    val user = UsersData(
+                    val user = Users(
                         type!!.lowercase(),
                         0,
                         emailInput.text.toString(),
