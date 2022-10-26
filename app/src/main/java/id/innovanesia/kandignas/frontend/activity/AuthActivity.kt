@@ -114,11 +114,11 @@ class AuthActivity : AppCompatActivity()
         binds.apply {
             if (data != null)
             {
-                if (passwordInput.text.toString() == data!!.data["password"])
+                if (passwordInput.text.toString() == data.data["password"])
                 {
                     val commit: SharedPreferences.Editor = sharedPreference.edit()
-                    commit.putString(keyUser, data!!.id)
-                    commit.putString(keyType, data!!.data["account_type"].toString())
+                    commit.putString(keyUser, data.id)
+                    commit.putString(keyType, data.data["account_type"].toString())
                     commit.apply()
                     if (sharedPreference.getString(keyType, null) == "kantin")
                     {

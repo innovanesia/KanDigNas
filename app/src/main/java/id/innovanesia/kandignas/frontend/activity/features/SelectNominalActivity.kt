@@ -8,6 +8,7 @@ import android.graphics.Rect
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -28,11 +29,13 @@ import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.properties.Delegates
 
 class SelectNominalActivity : AppCompatActivity()
 {
     private lateinit var binds: ActivitySelectNominalBinding
     private lateinit var sharedPreference: SharedPreferences
+    private var targetbalance by Delegates.notNull<Int>()
     private val keyUser = "key.user_name"
     private val db = FirebaseFirestore.getInstance()
 
@@ -51,7 +54,6 @@ class SelectNominalActivity : AppCompatActivity()
         val activity = intent.getStringExtra(ACTIVITY)
         val username = intent.getStringExtra(USERNAME)!!
         var userbalance: Int? = null
-        var targetbalance: Int? = null
 
         sharedPreference = getSharedPreferences("KanDigNas", Context.MODE_PRIVATE)
         val user = sharedPreference.getString(keyUser, null)!!
@@ -77,7 +79,43 @@ class SelectNominalActivity : AppCompatActivity()
                 yourBalanceContent.visibility = View.GONE
             }
 
-            db.collection("users").document(username).get()
+            var document: String? = null
+            var userid: String? = null
+
+            db.collection("users").get()
+                .addOnCompleteListener {
+                    if (it.isSuccessful)
+                    {
+                        for (docs in it.result)
+                        {
+                            if (username == docs.id)
+                            {
+                                document = "users"
+                                userid = docs.id
+                            }
+                        }
+                        if (document != null && userid != null)
+                            getData(document, userid)
+                    }
+                }
+            db.collection("kantin").get()
+                .addOnCompleteListener {
+                    if (it.isSuccessful)
+                    {
+                        for (docs in it.result)
+                        {
+                            if (username == docs.id)
+                            {
+                                document = "kantin"
+                                userid = docs.id
+                            }
+                        }
+                        if (document != null && userid != null)
+                            getData(document, userid)
+                    }
+                }
+
+            /*db.collection("users").document(username).get()
                 .addOnSuccessListener {
                     targetbalance = it.data?.get("balance").toString().toInt()
                     namaField.text = it.data?.get("fullname").toString()
@@ -94,7 +132,7 @@ class SelectNominalActivity : AppCompatActivity()
                         "QR Code salah!",
                         Toast.LENGTH_SHORT
                     ).show()
-                }
+                }*/
 
             setNominalButton()
 
@@ -219,7 +257,7 @@ class SelectNominalActivity : AppCompatActivity()
                                     db.collection("users").document(username)
                                         .update(
                                             "balance",
-                                            targetbalance?.plus(nominalInput.text.toString().toInt())
+                                            targetbalance.plus(nominalInput.text.toString().toInt())
                                         )
 
                                     if (activity == "koperasi")
@@ -389,6 +427,33 @@ class SelectNominalActivity : AppCompatActivity()
                 finish()
             }
         })
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun getData(document: String?, userid: String?)
+    {
+        binds.apply {
+            db.collection(document!!).document(userid!!).get()
+                .addOnSuccessListener {
+                    targetbalance = it.data?.get("balance").toString().toInt()
+                    namaField.text = it.data?.get("fullname").toString()
+                    usernameField.text = it.data?.get("username").toString()
+                    if (it.data?.get("account_type").toString() == "siswa")
+                        typeField.text = "Siswa"
+                    else if (it.data?.get("account_type").toString() == "umum")
+                        typeField.text = "Umum"
+                    else if (it.data?.get("account_type").toString() == "kantin")
+                        typeField.text = "Kantin"
+                }
+                .addOnFailureListener {
+                    onBackPressedDispatcher.onBackPressed()
+                    Toast.makeText(
+                        this@SelectNominalActivity,
+                        "QR Code salah!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+        }
     }
 
     @SuppressLint("SetTextI18n")
