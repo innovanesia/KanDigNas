@@ -76,17 +76,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/type_text">
 
                 <RadioButton
-                    android:id="@+id/koperasi_type"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:buttonTint="@color/white"
-                    android:text="Koperasi"
-                    android:textColor="@color/white"
-                    android:textSize="16sp"
-                    tools:ignore="HardcodedText,TextContrastCheck" />
-
-                <RadioButton
                     android:id="@+id/kantin_type"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -96,6 +85,17 @@
                     android:textColor="@color/white"
                     android:textSize="16sp"
                     tools:ignore="HardcodedText,TextContrastCheck" />
+
+                <RadioButton
+                    android:id="@+id/radioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:buttonTint="@color/white"
+                    android:text="Siswa"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    tools:ignore="HardcodedText" />
 
                 <RadioButton
                     android:id="@+id/umum_type"

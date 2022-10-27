@@ -106,25 +106,33 @@ class RegisterActivity : AppCompatActivity()
                 general = false
             }
 
+            var type: String? = null
+
             koperasiType.setOnClickListener {
                 val selectedId = typeGroup.checkedRadioButtonId
                 val button: RadioButton = findViewById(selectedId)
 
-                Log.d("Selected Button", button.text.toString())
+                type = button.text.toString()
+
+                Log.d("Selected Button", type!!.lowercase())
             }
 
             kantinType.setOnClickListener {
                 val selectedId = typeGroup.checkedRadioButtonId
                 val button: RadioButton = findViewById(selectedId)
 
-                Log.d("Selected Button", button.text.toString())
+                type = button.text.toString()
+
+                Log.d("Selected Button", type!!.lowercase())
             }
 
             umumType.setOnClickListener {
                 val selectedId = typeGroup.checkedRadioButtonId
                 val button: RadioButton = findViewById(selectedId)
 
-                Log.d("Selected Button", button.text.toString())
+                type = button.text.toString()
+
+                Log.d("Selected Button", type!!.lowercase())
             }
 
             submitButton.setOnClickListener {
@@ -148,6 +156,61 @@ class RegisterActivity : AppCompatActivity()
                 }
                 else
                 {
+                    val user = Users(
+                        type!!.lowercase(),
+                        0,
+                        emailInput.text.toString(),
+                        namaInput.text.toString(),
+                        niknipInput.text.toString(),
+                        "",
+                        "",
+                        passwordInput.text.toString(),
+                        kontakInput.text.toString(),
+                        usernameInput.text.toString()
+                    )
+
+                    if (type!!.lowercase() == "umum")
+                    {
+                        db.collection("users").document(usernameInput.text.toString())
+                            .set(user)
+                            .addOnSuccessListener {
+                                Log.d("Data insert", "Success!")
+                                Toast.makeText(this@RegisterActivity, "Registrasi sukses!", Toast.LENGTH_SHORT)
+                                    .show()
+                                finish()
+                            }
+                            .addOnFailureListener {
+                                Log.e("Data insert", "Failed!")
+                                Snackbar.make(
+                                    studentBinds.root,
+                                    "Registrasi gagal",
+                                    Snackbar.LENGTH_SHORT
+                                ).show()
+                            }
+                    }
+                    else
+                    {
+                        db.collection(type!!.lowercase()).document(usernameInput.text.toString())
+                            .set(user)
+                            .addOnSuccessListener {
+                                Log.d("Data insert", "Success!")
+                                Toast.makeText(
+                                    this@RegisterActivity,
+                                    "Registrasi sukses!",
+                                    Toast.LENGTH_SHORT
+                                )
+                                    .show()
+                                finish()
+                            }
+                            .addOnFailureListener {
+                                Log.e("Data insert", "Failed!")
+                                Snackbar.make(
+                                    studentBinds.root,
+                                    "Registrasi gagal",
+                                    Snackbar.LENGTH_SHORT
+                                ).show()
+                            }
+                    }
                     Toast.makeText(this@RegisterActivity, "Registrasi sukses!", Toast.LENGTH_SHORT)
                         .show()
                     finish()

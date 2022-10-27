@@ -47,7 +47,8 @@ class AuthActivity : AppCompatActivity()
                 finish()
             }
             else if (sharedPreference.getString(keyType, null) == "siswa"
-                    || sharedPreference.getString(keyType, null) == "umum")
+                || sharedPreference.getString(keyType, null) == "umum"
+            )
             {
                 startActivity(Intent(this, SiswaMenuActivity::class.java))
                 finish()
@@ -59,78 +60,129 @@ class AuthActivity : AppCompatActivity()
                 val username = usernameInput.text.toString()
                 var data: QueryDocumentSnapshot? = null
                 db.collection("users").get()
-                    .addOnCompleteListener {
-                        if (it.isSuccessful)
+                    .addOnCompleteListener { users ->
+                        if (users.isSuccessful)
                         {
-                            for (docs in it.result)
+                            for (docs in users.result)
                             {
                                 if (username == docs.data["username"])
                                 {
                                     data = docs
                                 }
                             }
+                            authCheck(data)
                         }
-                        if (data != null)
+                    }
+                db.collection("kantin").get()
+                    .addOnCompleteListener { kantin ->
+                        if (kantin.isSuccessful)
                         {
-                            if (passwordInput.text.toString() == data!!.data["password"])
+                            for (docs in kantin.result)
                             {
-                                val commit: SharedPreferences.Editor = sharedPreference.edit()
-                                commit.putString(keyUser, data!!.id)
-                                commit.putString(keyType, data!!.data["account_type"].toString())
-                                commit.apply()
-                                if (sharedPreference.getString(keyType, null) == "kantin")
+                                if (username == docs.data["username"])
                                 {
-                                    Toast.makeText(
-                                        this@AuthActivity, "Berhasil masuk!", Toast.LENGTH_SHORT
-                                    ).show()
-                                    startActivity(Intent(this@AuthActivity, KantinMenuActivity::class.java))
-                                    finish()
-                                }
-                                else if (sharedPreference.getString(keyType, null) == "koperasi")
-                                {
-                                    Toast.makeText(
-                                        this@AuthActivity, "Berhasil masuk!", Toast.LENGTH_SHORT
-                                    ).show()
-                                    startActivity(Intent(this@AuthActivity, KoperasiMenuActivity::class.java))
-                                    finish()
-                                }
-                                else if (sharedPreference.getString(keyType, null) == "siswa"
-                                    || sharedPreference.getString(keyType, null) == "umum")
-                                {
-                                    Toast.makeText(
-                                        this@AuthActivity, "Berhasil masuk!", Toast.LENGTH_SHORT
-                                    ).show()
-                                    startActivity(Intent(this@AuthActivity, SiswaMenuActivity::class.java))
-                                    finish()
+                                    data = docs
                                 }
                             }
-                            else
-                                Snackbar.make(
-                                    binds.root,
-                                    "Username atau kata sandi salah!",
-                                    Snackbar.LENGTH_SHORT
-                                ).show()
+                            authCheck(data)
                         }
-                        else
-                            Snackbar.make(
-                                binds.root,
-                                "Username tidak ditemukan!",
-                                Snackbar.LENGTH_SHORT
-                            ).show()
                     }
-                if (usernameInput.text.toString() == "" || passwordInput.text.toString() == "")
-                {
-                    Snackbar.make(
-                        binds.root,
-                        "Gagal untuk masuk.\nMohon periksa kembali!",
-                        Snackbar.LENGTH_SHORT
-                    ).show()
-                }
+                db.collection("koperasi").get()
+                    .addOnCompleteListener { koperasi ->
+                        if (koperasi.isSuccessful)
+                        {
+                            for (docs in koperasi.result)
+                            {
+                                if (username == docs.data["username"])
+                                {
+                                    data = docs
+                                }
+                            }
+                            authCheck(data)
+                        }
+                    }
             }
 
             registerButton.setOnClickListener {
                 startActivity(Intent(this@AuthActivity, RegisterActivity::class.java))
             }
+        }
+    }
+
+    private fun authCheck(data: QueryDocumentSnapshot?)
+    {
+        binds.apply {
+            if (data != null)
+            {
+                if (passwordInput.text.toString() == data.data["password"])
+                {
+                    val commit: SharedPreferences.Editor = sharedPreference.edit()
+                    commit.putString(keyUser, data.id)
+                    commit.putString(keyType, data.data["account_type"].toString())
+                    commit.apply()
+                    if (sharedPreference.getString(keyType, null) == "kantin")
+                    {
+                        Toast.makeText(
+                            this@AuthActivity, "Berhasil masuk!", Toast.LENGTH_SHORT
+                        ).show()
+                        startActivity(
+                            Intent(
+                                this@AuthActivity,
+                                KantinMenuActivity::class.java
+                            )
+                        )
+                        finish()
+                    }
+                    else if (sharedPreference.getString(keyType, null) == "koperasi")
+                    {
+                        Toast.makeText(
+                            this@AuthActivity, "Berhasil masuk!", Toast.LENGTH_SHORT
+                        ).show()
+                        startActivity(
+                            Intent(
+                                this@AuthActivity,
+                                KoperasiMenuActivity::class.java
+                            )
+                        )
+                        finish()
+                    }
+                    else if (sharedPreference.getString(keyType, null) == "siswa"
+                        || sharedPreference.getString(keyType, null) == "umum"
+                    )
+                    {
+                        Toast.makeText(
+                            this@AuthActivity, "Berhasil masuk!", Toast.LENGTH_SHORT
+                        ).show()
+                        startActivity(
+                            Intent(
+                                this@AuthActivity,
+                                SiswaMenuActivity::class.java
+                            )
+                        )
+                        finish()
+                    }
+                }
+                else
+                    Snackbar.make(
+                        binds.root,
+                        "Username atau kata sandi salah!",
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+            }
+            else if (usernameInput.text.toString() == "" || passwordInput.text.toString() == "")
+            {
+                Snackbar.make(
+                    binds.root,
+                    "Gagal untuk masuk.\nMohon periksa kembali!",
+                    Snackbar.LENGTH_SHORT
+                ).show()
+            }
+            else
+                Snackbar.make(
+                    binds.root,
+                    "Username tidak ditemukan!",
+                    Snackbar.LENGTH_SHORT
+                ).show()
         }
     }
 
