@@ -33,7 +33,7 @@ class TransactionHistoryActivity : AppCompatActivity()
         binds.apply {
             setSupportActionBar(toolbar)
             toolbar.setNavigationOnClickListener {
-                onBackPressed()
+                finish()
             }
 
             transactionHistoryLoading.visibility = View.VISIBLE
