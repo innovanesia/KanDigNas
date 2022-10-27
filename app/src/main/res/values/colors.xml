@@ -5,9 +5,12 @@
     <color name="blue">#009CFF</color>
     <color name="light_blue">#90D4FF</color>
     <color name="red">#DC313A</color>
-    <color name="yellow">#DAC800</color>
+    <color name="green">#00C853</color>
+    <color name="yellow">#FFFF00</color>
     <color name="orange">#FF8A65</color>
     <color name="deep_blue">#1E789A</color>
     <color name="submarine">#0D47A1</color>
+    <color name="button_blue">#1565C0</color>
     <color name="grey">#646464</color>
+    <color name="light_grey">#C8C8C8</color>
 </resources>

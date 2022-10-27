@@ -7,14 +7,15 @@ plugins {
 }
 
 android {
+    namespace 'id.innovanesia.kandignas'
     compileSdk 33
 
     defaultConfig {
         applicationId "id.innovanesia.kandignas"
         minSdk 21
         targetSdk 33
-        versionCode 80
-        versionName "0.2.internal_debug"
+        versionCode 1
+        versionName "0.3.0-internal_dev"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -38,7 +39,6 @@ android {
     buildFeatures {
         viewBinding true
     }
-    namespace 'id.innovanesia.kandignas'
 }
 
 dependencies {
@@ -47,13 +47,13 @@ dependencies {
 
     // UI
     implementation 'androidx.appcompat:appcompat:1.7.0-alpha01'
-    implementation 'com.google.android.material:material:1.8.0-alpha01'
+    implementation 'com.google.android.material:material:1.8.0-alpha02'
     implementation 'androidx.constraintlayout:constraintlayout:2.2.0-alpha04'
     implementation 'com.makeramen:roundedimageview:2.3.0'
     implementation 'com.github.denzcoskun:ImageSlideshow:0.1.0'
-    implementation 'com.github.bumptech.glide:glide:4.13.2'
+    implementation 'com.github.bumptech.glide:glide:4.14.2'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.13.2'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.14.2'
 
     // Backend
     implementation 'com.github.yuriy-budiyev:code-scanner:2.3.2'

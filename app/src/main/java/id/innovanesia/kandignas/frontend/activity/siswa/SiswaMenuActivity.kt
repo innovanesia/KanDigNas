@@ -7,6 +7,7 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
@@ -18,6 +19,7 @@ import id.innovanesia.kandignas.databinding.ActivitySiswaMenuBinding
 import id.innovanesia.kandignas.frontend.activity.AuthActivity
 import id.innovanesia.kandignas.frontend.activity.features.ScanQRActivity
 import id.innovanesia.kandignas.frontend.activity.features.ShowQRActivity
+import id.innovanesia.kandignas.frontend.activity.features.TransactionHistoryActivity
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.*
@@ -25,10 +27,10 @@ import java.util.*
 class SiswaMenuActivity : AppCompatActivity()
 {
     private lateinit var binds: ActivitySiswaMenuBinding
+    private lateinit var sharedPreference: SharedPreferences
     private val keyUser = "key.user_name"
     private val keyType = "key.type"
     private val db = FirebaseFirestore.getInstance()
-    private lateinit var sharedPreference: SharedPreferences
 
     companion object
     {
@@ -46,6 +48,8 @@ class SiswaMenuActivity : AppCompatActivity()
 
         binds.apply {
             setSupportActionBar(toolbar)
+
+            mainMenuSiswaLoading.visibility = View.VISIBLE
 
             if (sharedPreference.getString(keyType, null) == "siswa")
                 toolbar.title = "Siswa"
@@ -68,7 +72,15 @@ class SiswaMenuActivity : AppCompatActivity()
                     .also {
                         it.putExtra("ACTIVITY", type)
                     })
-                finish()
+            }
+            transactionHistoryButton.setOnClickListener {
+                startActivity(
+                    Intent(
+                        this@SiswaMenuActivity, TransactionHistoryActivity::class.java
+                    ).also {
+                        it.putExtra("ACTIVITY", type)
+                    }
+                )
             }
         }
 
@@ -135,22 +147,23 @@ class SiswaMenuActivity : AppCompatActivity()
     @SuppressLint("SetTextI18n")
     private fun getDB(username: String)
     {
-        db.collection("users").document(username).get()
-            .addOnSuccessListener {
-                binds.apply {
+        binds.apply {
+            db.collection("users").document(username).get()
+                .addOnSuccessListener {
+                    mainMenuSiswaLoading.visibility = View.GONE
                     greetingsText.text = "Hai, ${it.data?.get("fullname")}!"
                     val format: NumberFormat = DecimalFormat("#,###")
                     balanceAmount.text = format.format(it.data?.get("balance"))
                 }
-            }
-            .addOnFailureListener {
-                Snackbar.make(
-                    binds.root,
-                    "Something wrong, please try again!",
-                    Snackbar.LENGTH_SHORT
-                ).show()
-                it.printStackTrace()
-            }
-        binds.swipeRefreshLayout.isRefreshing = false
+                .addOnFailureListener {
+                    Snackbar.make(
+                        binds.root,
+                        "Something wrong, please try again!",
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                    it.printStackTrace()
+                }
+            swipeRefreshLayout.isRefreshing = false
+        }
     }
 }

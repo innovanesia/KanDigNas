@@ -219,7 +219,7 @@
                 tools:ignore="HardcodedText" />
 
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/rekap_button"
+                android:id="@+id/transaction_history_button"
                 android:layout_width="75dp"
                 android:layout_height="75dp"
                 app:cardBackgroundColor="@color/white"
@@ -231,7 +231,7 @@
                 app:layout_constraintTop_toTopOf="@+id/cairsaldo_button">
 
                 <ImageView
-                    android:id="@+id/rekap_icon"
+                    android:id="@+id/transaction_history_icon"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_gravity="center"
@@ -241,7 +241,7 @@
             </com.google.android.material.card.MaterialCardView>
 
             <TextView
-                android:id="@+id/rekap_text"
+                android:id="@+id/transaction_history_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|center"
@@ -251,9 +251,9 @@
                 android:textColor="@color/grey"
                 android:textSize="14sp"
                 android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="@+id/rekap_button"
-                app:layout_constraintStart_toStartOf="@+id/rekap_button"
-                app:layout_constraintTop_toBottomOf="@+id/rekap_button"
+                app:layout_constraintEnd_toEndOf="@+id/transaction_history_button"
+                app:layout_constraintStart_toStartOf="@+id/transaction_history_button"
+                app:layout_constraintTop_toBottomOf="@+id/transaction_history_button"
                 tools:ignore="HardcodedText" />
 
             <com.google.android.material.card.MaterialCardView
