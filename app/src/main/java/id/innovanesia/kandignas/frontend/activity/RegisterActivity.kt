@@ -9,18 +9,19 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.RadioButton
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.FirebaseFirestore
 import id.innovanesia.kandignas.backend.models.Users
 import id.innovanesia.kandignas.databinding.RegisterAccountFormBinding
 
-class RegisterActivity : AppCompatActivity() {
+class RegisterActivity : AppCompatActivity()
+{
     private lateinit var binds: RegisterAccountFormBinding
     private val db = FirebaseFirestore.getInstance()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
         super.onCreate(savedInstanceState)
         binds = RegisterAccountFormBinding.inflate(layoutInflater)
         setContentView(binds.root)
@@ -28,13 +29,17 @@ class RegisterActivity : AppCompatActivity() {
         viewForm()
     }
 
-    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
-        if (event.action == MotionEvent.ACTION_DOWN) {
+    override fun dispatchTouchEvent(event: MotionEvent): Boolean
+    {
+        if (event.action == MotionEvent.ACTION_DOWN)
+        {
             val v: View? = currentFocus
-            if (v is EditText) {
+            if (v is EditText)
+            {
                 val outRect = Rect()
                 v.getGlobalVisibleRect(outRect)
-                if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
+                if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt()))
+                {
                     v.clearFocus()
                     val imm: InputMethodManager =
                         getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
@@ -45,14 +50,14 @@ class RegisterActivity : AppCompatActivity() {
         return super.dispatchTouchEvent(event)
     }
 
-    private fun viewForm() {
+    private fun viewForm()
+    {
         binds.apply {
             setSupportActionBar(toolbar)
 
             toolbar.setNavigationOnClickListener {
                 finish()
             }
-
             var type: String? = null
 
             kantinType.setOnClickListener {
@@ -83,27 +88,36 @@ class RegisterActivity : AppCompatActivity() {
             }
 
             submitButton.setOnClickListener {
-                if (type!!.lowercase() == "umum" || type!!.lowercase() == "kantin") {
+                if (type!!.lowercase() == "umum" || type!!.lowercase() == "kantin")
+                {
                     if (niknipInput.text!!.isEmpty() || namaInput.text!!.isEmpty()
                         || kontakInput.text!!.isEmpty() || emailInput.text!!.isEmpty()
                         || usernameInput.text!!.isEmpty() || passwordInput.text!!.isEmpty()
                         || confirmpassInput.text!!.isEmpty()
-                    ) {
+                    )
+                    {
                         Snackbar.make(binds.root, "Mohon isi semua data!", Snackbar.LENGTH_SHORT)
                             .show()
-                    } else
+                    }
+                    else
                         dataInsert(type)
-                } else if (type!!.lowercase() == "siswa") {
+                }
+                else if (type!!.lowercase() == "siswa")
+                {
                     if (nisnInput.text!!.isEmpty() || nisInput.text!!.isEmpty() || namaInput.text!!.isEmpty()
                         || kontakInput.text!!.isEmpty() || emailInput.text!!.isEmpty()
                         || usernameInput.text!!.isEmpty() || passwordInput.text!!.isEmpty()
                         || confirmpassInput.text!!.isEmpty()
-                    ) {
+                    )
+                    {
                         Snackbar.make(binds.root, "Mohon isi semua data!", Snackbar.LENGTH_SHORT)
                             .show()
-                    } else
+                    }
+                    else
                         dataInsert(type)
-                } else if (passwordInput.text.toString() != confirmpassInput.text.toString()) {
+                }
+                else if (passwordInput.text.toString() != confirmpassInput.text.toString())
+                {
                     Snackbar.make(
                         binds.root,
                         "Kata sandi tidak sama!",
@@ -119,10 +133,10 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
-    private fun dataInsert(type: String?) {
+    private fun dataInsert(type: String?)
+    {
         binds.apply {
             var exist = false
-
             val user = Users(
                 type!!.lowercase(),
                 0,
@@ -136,22 +150,29 @@ class RegisterActivity : AppCompatActivity() {
                 usernameInput.text.toString()
             )
 
-            if (type.lowercase() == "umum" || type.lowercase() == "siswa") {
+            if (type.lowercase() == "umum" || type.lowercase() == "siswa")
+            {
                 db.collection("users").get()
                     .addOnCompleteListener {
-                        if (it.isSuccessful) {
-                            for (docs in it.result) {
-                                if (usernameInput.text.toString() == docs.id) {
+                        if (it.isSuccessful)
+                        {
+                            for (docs in it.result)
+                            {
+                                if (usernameInput.text.toString() == docs.id)
+                                {
                                     exist = true
                                 }
                             }
-                            if (exist) {
+                            if (exist)
+                            {
                                 Snackbar.make(
                                     binds.root,
                                     "Username sudah terdaftar! Gunakan username lain.",
                                     Snackbar.LENGTH_SHORT
                                 ).show()
-                            } else {
+                            }
+                            else
+                            {
                                 db.collection("users").document(usernameInput.text.toString())
                                     .set(user)
                                     .addOnSuccessListener {
@@ -175,14 +196,19 @@ class RegisterActivity : AppCompatActivity() {
                             }
                         }
                     }
-            } else {
-                if (exist) {
+            }
+            else
+            {
+                if (exist)
+                {
                     Snackbar.make(
                         binds.root,
                         "Username sudah terdaftar! Gunakan username lain.",
                         Snackbar.LENGTH_SHORT
                     ).show()
-                } else {
+                }
+                else
+                {
                     db.collection(type.lowercase()).document(usernameInput.text.toString())
                         .set(user)
                         .addOnSuccessListener {
@@ -208,8 +234,6 @@ class RegisterActivity : AppCompatActivity() {
                     .show()
                 finish()
             }
-
-
         }
     }
 }
