@@ -9,25 +9,26 @@
 
     <ImageView
         android:id="@+id/loading_image"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:alpha="0.5"
-        app:layout_constraintBottom_toTopOf="@+id/loading_bar"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/loadpage"
+        app:layout_constraintVertical_bias="0.30"
+        app:srcCompat="@drawable/new_kandignas_logo_splash"
         tools:ignore="ContentDescription,ImageContrastCheck" />
 
     <ImageView
         android:id="@+id/text_icon_image"
         android:layout_width="250dp"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/loading_image"
-        app:layout_constraintStart_toStartOf="@+id/loading_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/kandignas_blue"
+        app:layout_constraintVertical_bias="0.58000004"
+        app:srcCompat="@drawable/kandignas_submarine"
         tools:ignore="ContentDescription,ImageContrastCheck" />
 
     <ProgressBar

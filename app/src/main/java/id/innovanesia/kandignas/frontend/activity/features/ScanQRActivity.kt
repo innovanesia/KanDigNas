@@ -45,7 +45,7 @@ class ScanQRActivity : AppCompatActivity()
         binds.apply {
             setSupportActionBar(toolbar)
             toolbar.setNavigationOnClickListener {
-                onBackPressed()
+                finish()
             }
 
             codeScanner = CodeScanner(this@ScanQRActivity, qrscannerView)

@@ -115,25 +115,6 @@ class SelectNominalActivity : AppCompatActivity()
                     }
                 }
 
-            /*db.collection("users").document(username).get()
-                .addOnSuccessListener {
-                    targetbalance = it.data?.get("balance").toString().toInt()
-                    namaField.text = it.data?.get("fullname").toString()
-                    usernameField.text = it.data?.get("username").toString()
-                    if (it.data?.get("account_type").toString() == "siswa")
-                        typeField.text = "Siswa"
-                    else if (it.data?.get("account_type").toString() == "umum")
-                        typeField.text = "Umum"
-                }
-                .addOnFailureListener {
-                    onBackPressedDispatcher.onBackPressed()
-                    Toast.makeText(
-                        this@SelectNominalActivity,
-                        "QR Code salah!",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }*/
-
             setNominalButton()
 
             nominalInput.addTextChangedListener(object : TextWatcher

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Rect
 import android.os.Bundle
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -163,11 +164,14 @@ class AuthActivity : AppCompatActivity()
                     }
                 }
                 else
+                {
                     Snackbar.make(
                         binds.root,
                         "Username atau kata sandi salah!",
                         Snackbar.LENGTH_SHORT
                     ).show()
+                    Log.e("Error 1", "Error 1")
+                }
             }
             else if (usernameInput.text.toString() == "" || passwordInput.text.toString() == "")
             {
@@ -176,13 +180,17 @@ class AuthActivity : AppCompatActivity()
                     "Gagal untuk masuk.\nMohon periksa kembali!",
                     Snackbar.LENGTH_SHORT
                 ).show()
+                Log.e("Error 2", "Error 2")
             }
-            else
+            else if (data == null)
+            {
                 Snackbar.make(
                     binds.root,
                     "Username tidak ditemukan!",
                     Snackbar.LENGTH_SHORT
                 ).show()
+                Log.e("Error 3", "Error 3")
+            }
         }
     }
 

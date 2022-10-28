@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import com.denzcoskun.imageslider.models.SlideModel
+import com.google.firebase.firestore.FirebaseFirestore
 import id.innovanesia.kandignas.R
 import id.innovanesia.kandignas.databinding.ActivityKantinMenuBinding
 import id.innovanesia.kandignas.frontend.activity.AuthActivity
@@ -19,8 +20,15 @@ import id.innovanesia.kandignas.frontend.activity.features.ShowQRActivity
 class KantinMenuActivity : AppCompatActivity()
 {
     private lateinit var binds: ActivityKantinMenuBinding
-    private val keyUser = "key.user_name"
     private lateinit var sharedPreference: SharedPreferences
+    private val keyUser = "key.user_name"
+    private val keyType = "key.type"
+    private val db = FirebaseFirestore.getInstance()
+
+    companion object
+    {
+        private const val type = "kantin"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -29,6 +37,7 @@ class KantinMenuActivity : AppCompatActivity()
         setContentView(binds.root)
 
         sharedPreference = getSharedPreferences("KanDigNas", Context.MODE_PRIVATE)
+        val username = sharedPreference.getString(keyUser, null)!!
 
         binds.apply {
             setSupportActionBar(toolbar)
@@ -46,13 +55,14 @@ class KantinMenuActivity : AppCompatActivity()
 
             setNews()
         }
-        /*onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true)
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true)
         {
             override fun handleOnBackPressed()
             {
                 finish()
             }
-        })*/
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean
