@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">KanDigNas</string>
     <string name="auth_title">Kantin Digital Nasional</string>
-    <string name="build">© Innovanesia 2022\nBuild 0.3.1.internal_dev.221027–2355</string>
+    <string name="build">© Innovanesia 2022\nBuild 0.3.2.internal_dev.221031–0000</string>
     <string name="login">Masuk</string>
     <string name="register">Daftar</string>
     <string name="logout">Keluar</string>

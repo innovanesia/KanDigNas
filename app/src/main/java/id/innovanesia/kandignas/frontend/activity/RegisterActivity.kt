@@ -11,7 +11,6 @@ import android.widget.RadioButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import id.innovanesia.kandignas.backend.models.Users
 import id.innovanesia.kandignas.databinding.RegisterAccountFormBinding
@@ -21,6 +20,7 @@ class RegisterActivity : AppCompatActivity()
 {
     private lateinit var binds: RegisterAccountFormBinding
     private val db = FirebaseFirestore.getInstance()
+    private var exist by Delegates.notNull<Boolean>()
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -60,7 +60,6 @@ class RegisterActivity : AppCompatActivity()
             toolbar.setNavigationOnClickListener {
                 finish()
             }
-
             var type: String? = null
 
             kantinType.setOnClickListener {
@@ -68,8 +67,6 @@ class RegisterActivity : AppCompatActivity()
                 val button: RadioButton = findViewById(selectedId)
 
                 type = button.text.toString()
-
-                Log.d("Selected Button", type!!.lowercase())
             }
 
             umumType.setOnClickListener {
@@ -77,8 +74,6 @@ class RegisterActivity : AppCompatActivity()
                 val button: RadioButton = findViewById(selectedId)
 
                 type = button.text.toString()
-
-                Log.d("Selected Button", type!!.lowercase())
             }
 
             siswaType.setOnClickListener {
@@ -86,20 +81,16 @@ class RegisterActivity : AppCompatActivity()
                 val button: RadioButton = findViewById(selectedId)
 
                 type = button.text.toString()
-
-                Log.d("Selected Button", type!!.lowercase())
             }
 
             submitButton.setOnClickListener {
-                var exist: Boolean? = null
                 if (type == null)
                 {
                     Snackbar.make(
                         binds.root,
                         "Mohon isi semua data!",
                         Snackbar.LENGTH_SHORT
-                    )
-                        .show()
+                    ).show()
                 }
                 else
                 {
@@ -118,53 +109,14 @@ class RegisterActivity : AppCompatActivity()
                             )
                                 .show()
                         }
+                        else if (!usernameExist(usernameInput.text.toString()))
+                            dataInsert(type)
                         else
-                        {
-                            if (type!!.lowercase() == "umum")
-                            {
-                                db.collection("users").get()
-                                    .addOnCompleteListener {
-                                        if (it.isSuccessful)
-                                        {
-                                            for (doc in it.result)
-                                            {
-                                                exist = usernameInput.text.toString() == doc.id
-                                            }
-                                        }
-                                    }
-                                if (exist == true)
-                                    Snackbar.make(
-                                        binds.root,
-                                        "Username sudah digunakan! Mohon gunakan username lain.",
-                                        Snackbar.LENGTH_SHORT
-                                    )
-                                        .show()
-                                else
-                                    dataInsert(type)
-                            }
-                            else
-                            {
-                                db.collection(type!!.lowercase()).get()
-                                    .addOnCompleteListener {
-                                        if (it.isSuccessful)
-                                        {
-                                            for (doc in it.result)
-                                            {
-                                                exist = usernameInput.text.toString() == doc.id
-                                            }
-                                        }
-                                    }
-                                if (exist == true)
-                                    Snackbar.make(
-                                        binds.root,
-                                        "Username sudah digunakan! Mohon gunakan username lain.",
-                                        Snackbar.LENGTH_SHORT
-                                    )
-                                        .show()
-                                else
-                                    dataInsert(type)
-                            }
-                        }
+                            Snackbar.make(
+                                binds.root,
+                                "Username sudah digunakan. Mohon ubah username!",
+                                Snackbar.LENGTH_SHORT
+                            ).show()
                     }
                     else if (type!!.lowercase() == "siswa")
                     {
@@ -181,28 +133,14 @@ class RegisterActivity : AppCompatActivity()
                             )
                                 .show()
                         }
+                        else if (!usernameExist(usernameInput.text.toString()))
+                            dataInsert(type)
                         else
-                        {
-                            db.collection("users").get()
-                                .addOnCompleteListener {
-                                    if (it.isSuccessful)
-                                    {
-                                        for (doc in it.result)
-                                        {
-                                            exist = usernameInput.text.toString() == doc.id
-                                        }
-                                    }
-                                }
-                            if (exist == true)
-                                Snackbar.make(
-                                    binds.root,
-                                    "Username sudah digunakan! Mohon gunakan username lain.",
-                                    Snackbar.LENGTH_SHORT
-                                )
-                                    .show()
-                            else
-                                dataInsert(type)
-                        }
+                            Snackbar.make(
+                                binds.root,
+                                "Username sudah digunakan. Mohon ubah username!",
+                                Snackbar.LENGTH_SHORT
+                            ).show()
                     }
                     else if (passwordInput.text.toString() != confirmpassInput.text.toString())
                     {
@@ -210,16 +148,99 @@ class RegisterActivity : AppCompatActivity()
                             binds.root,
                             "Kata sandi tidak sama!",
                             Snackbar.LENGTH_SHORT
-                        )
-                            .show()
+                        ).show()
                     }
+                    else if (usernameExist(usernameInput.text.toString()))
+                    {
+                        Log.e("Exist", usernameExist(usernameInput.text.toString()).toString())
+                        Snackbar.make(
+                            binds.root,
+                            "Username sudah digunakan! Mohon ganti username.",
+                            Snackbar.LENGTH_SHORT
+                        ).show()
+                    }
+                    else
+                        dataInsert(type)
+                }
+
+                loginText.setOnClickListener {
+                    finish()
                 }
             }
-
-            loginText.setOnClickListener {
-                finish()
-            }
         }
+    }
+
+    private fun usernameExist(username: String): Boolean
+    {
+        var checked = false
+        Log.e("Username", username)
+        db.collection("kantin").get()
+            .addOnCompleteListener { kantin ->
+                if (kantin.isSuccessful)
+                {
+                    for (docs in kantin.result)
+                    {
+                        if (username == docs.id)
+                            checked = true
+                    }
+                    exist = checked
+                    Log.e("Check 1", exist.toString())
+                }
+            }
+        db.collection("koperasi").get()
+            .addOnCompleteListener { koperasi ->
+                if (koperasi.isSuccessful)
+                {
+                    for (docs in koperasi.result)
+                    {
+                        if (username == docs.id)
+                            checked = true
+                    }
+                    exist = checked
+                    Log.e("Check 2", exist.toString())
+                }
+            }
+        db.collection("schools").get()
+            .addOnCompleteListener { schools ->
+                if (schools.isSuccessful)
+                {
+                    for (docs in schools.result)
+                    {
+                        if (username == docs.id)
+                            checked = true
+                    }
+                    exist = checked
+                    Log.e("Check 3", exist.toString())
+                }
+            }
+        db.collection("superuser").get()
+            .addOnCompleteListener { superuser ->
+                if (superuser.isSuccessful)
+                {
+                    for (docs in superuser.result)
+                    {
+                        if (username == docs.id)
+                            checked = true
+                    }
+                    exist = checked
+                    Log.e("Check 4", exist.toString())
+                }
+            }
+        db.collection("users").get()
+            .addOnCompleteListener { users ->
+                if (users.isSuccessful)
+                {
+                    for (docs in users.result)
+                    {
+                        if (username == docs.id)
+                            checked = true
+                    }
+                    exist = checked
+                    Log.e("Check 5", exist.toString())
+                }
+            }
+        Log.e("Last Check", exist.toString())
+        return exist
     }
 
     private fun dataInsert(type: String?)
