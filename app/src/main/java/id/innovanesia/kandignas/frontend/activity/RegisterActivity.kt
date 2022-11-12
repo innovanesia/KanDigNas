@@ -2,23 +2,18 @@ package id.innovanesia.kandignas.frontend.activity
 
 import android.graphics.Rect
 import android.os.Bundle
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.RadioButton
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.firestore.FirebaseFirestore
-import id.innovanesia.kandignas.backend.models.Users
 import id.innovanesia.kandignas.databinding.RegisterAccountFormBinding
 
 class RegisterActivity : AppCompatActivity()
 {
     private lateinit var binds: RegisterAccountFormBinding
-    private val db = FirebaseFirestore.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -58,15 +53,33 @@ class RegisterActivity : AppCompatActivity()
             toolbar.setNavigationOnClickListener {
                 finish()
             }
+
             var type: String? = null
+
+            niknipLayout.visibility = View.GONE
+            nisnLayout.visibility = View.GONE
+            nisLayout.visibility = View.GONE
+            namaLayout.visibility = View.GONE
+            kontakLayout.visibility = View.GONE
+            emailLayout.visibility = View.GONE
+            usernameLayout.visibility = View.GONE
+            passwordLayout.visibility = View.GONE
+            confirmpassLayout.visibility = View.GONE
 
             kantinType.setOnClickListener {
                 val selectedId = typeGroup.checkedRadioButtonId
                 val button: RadioButton = findViewById(selectedId)
 
                 type = button.text.toString()
-
-                Log.d("Selected Button", type!!.lowercase())
+                niknipLayout.visibility = View.VISIBLE
+                nisLayout.visibility = View.GONE
+                nisnLayout.visibility = View.GONE
+                namaLayout.visibility = View.VISIBLE
+                kontakLayout.visibility = View.VISIBLE
+                emailLayout.visibility = View.VISIBLE
+                usernameLayout.visibility = View.VISIBLE
+                passwordLayout.visibility = View.VISIBLE
+                confirmpassLayout.visibility = View.VISIBLE
             }
 
             umumType.setOnClickListener {
@@ -74,8 +87,15 @@ class RegisterActivity : AppCompatActivity()
                 val button: RadioButton = findViewById(selectedId)
 
                 type = button.text.toString()
-
-                Log.d("Selected Button", type!!.lowercase())
+                niknipLayout.visibility = View.VISIBLE
+                nisLayout.visibility = View.GONE
+                nisnLayout.visibility = View.GONE
+                namaLayout.visibility = View.VISIBLE
+                kontakLayout.visibility = View.VISIBLE
+                emailLayout.visibility = View.VISIBLE
+                usernameLayout.visibility = View.VISIBLE
+                passwordLayout.visibility = View.VISIBLE
+                confirmpassLayout.visibility = View.VISIBLE
             }
 
             siswaType.setOnClickListener {
@@ -83,157 +103,83 @@ class RegisterActivity : AppCompatActivity()
                 val button: RadioButton = findViewById(selectedId)
 
                 type = button.text.toString()
-
-                Log.d("Selected Button", type!!.lowercase())
+                niknipLayout.visibility = View.VISIBLE
+                nisLayout.visibility = View.VISIBLE
+                nisnLayout.visibility = View.VISIBLE
+                namaLayout.visibility = View.VISIBLE
+                kontakLayout.visibility = View.VISIBLE
+                emailLayout.visibility = View.VISIBLE
+                usernameLayout.visibility = View.VISIBLE
+                passwordLayout.visibility = View.VISIBLE
+                confirmpassLayout.visibility = View.VISIBLE
             }
 
             submitButton.setOnClickListener {
-                if (type!!.lowercase() == "umum" || type!!.lowercase() == "kantin")
-                {
-                    if (niknipInput.text!!.isEmpty() || namaInput.text!!.isEmpty()
-                        || kontakInput.text!!.isEmpty() || emailInput.text!!.isEmpty()
-                        || usernameInput.text!!.isEmpty() || passwordInput.text!!.isEmpty()
-                        || confirmpassInput.text!!.isEmpty()
-                    )
-                    {
-                        Snackbar.make(binds.root, "Mohon isi semua data!", Snackbar.LENGTH_SHORT)
-                            .show()
-                    }
-                    else
-                        dataInsert(type)
-                }
-                else if (type!!.lowercase() == "siswa")
-                {
-                    if (nisnInput.text!!.isEmpty() || nisInput.text!!.isEmpty() || namaInput.text!!.isEmpty()
-                        || kontakInput.text!!.isEmpty() || emailInput.text!!.isEmpty()
-                        || usernameInput.text!!.isEmpty() || passwordInput.text!!.isEmpty()
-                        || confirmpassInput.text!!.isEmpty()
-                    )
-                    {
-                        Snackbar.make(binds.root, "Mohon isi semua data!", Snackbar.LENGTH_SHORT)
-                            .show()
-                    }
-                    else
-                        dataInsert(type)
-                }
-                else if (passwordInput.text.toString() != confirmpassInput.text.toString())
+                if (type == null)
                 {
                     Snackbar.make(
                         binds.root,
-                        "Kata sandi tidak sama!",
-                        Snackbar.LENGTH_SHORT
-                    )
-                        .show()
-                }
-            }
-
-            loginText.setOnClickListener {
-                finish()
-            }
-        }
-    }
-
-    private fun dataInsert(type: String?)
-    {
-        binds.apply {
-            var exist = false
-            val user = Users(
-                type!!.lowercase(),
-                0,
-                emailInput.text.toString(),
-                namaInput.text.toString(),
-                niknipInput.text.toString(),
-                nisInput.text.toString(),
-                nisnInput.text.toString(),
-                passwordInput.text.toString(),
-                kontakInput.text.toString(),
-                usernameInput.text.toString()
-            )
-
-            if (type.lowercase() == "umum" || type.lowercase() == "siswa")
-            {
-                db.collection("users").get()
-                    .addOnCompleteListener {
-                        if (it.isSuccessful)
-                        {
-                            for (docs in it.result)
-                            {
-                                if (usernameInput.text.toString() == docs.id)
-                                {
-                                    exist = true
-                                }
-                            }
-                            if (exist)
-                            {
-                                Snackbar.make(
-                                    binds.root,
-                                    "Username sudah terdaftar! Gunakan username lain.",
-                                    Snackbar.LENGTH_SHORT
-                                ).show()
-                            }
-                            else
-                            {
-                                db.collection("users").document(usernameInput.text.toString())
-                                    .set(user)
-                                    .addOnSuccessListener {
-                                        Log.d("Data insert", "Success!")
-                                        Toast.makeText(
-                                            this@RegisterActivity,
-                                            "Registrasi sukses!",
-                                            Toast.LENGTH_SHORT
-                                        )
-                                            .show()
-                                        finish()
-                                    }
-                                    .addOnFailureListener {
-                                        Log.e("Data insert", "Failed!")
-                                        Snackbar.make(
-                                            binds.root,
-                                            "Registrasi gagal",
-                                            Snackbar.LENGTH_SHORT
-                                        ).show()
-                                    }
-                            }
-                        }
-                    }
-            }
-            else
-            {
-                if (exist)
-                {
-                    Snackbar.make(
-                        binds.root,
-                        "Username sudah terdaftar! Gunakan username lain.",
+                        "Mohon isi semua data!",
                         Snackbar.LENGTH_SHORT
                     ).show()
                 }
                 else
                 {
-                    db.collection(type.lowercase()).document(usernameInput.text.toString())
-                        .set(user)
-                        .addOnSuccessListener {
-                            Log.d("Data insert", "Success!")
-                            Toast.makeText(
-                                this@RegisterActivity,
-                                "Registrasi sukses!",
-                                Toast.LENGTH_SHORT
-                            )
-                                .show()
-                            finish()
-                        }
-                        .addOnFailureListener {
-                            Log.e("Data insert", "Failed!")
+                    if (type!!.lowercase() == "umum" || type!!.lowercase() == "kantin")
+                    {
+                        if (niknipInput.text!!.isEmpty() || namaInput.text!!.isEmpty()
+                            || kontakInput.text!!.isEmpty() || emailInput.text!!.isEmpty()
+                            || usernameInput.text!!.isEmpty() || passwordInput.text!!.isEmpty()
+                            || confirmpassInput.text!!.isEmpty()
+                        )
+                        {
                             Snackbar.make(
                                 binds.root,
-                                "Registrasi gagal",
+                                "Mohon isi semua data!",
+                                Snackbar.LENGTH_SHORT
+                            )
+                                .show()
+                        }
+                        else if (passwordInput.text.toString() != confirmpassInput.text.toString())
+                            Snackbar.make(
+                                binds.root,
+                                "Kata sandi tidak sama!",
                                 Snackbar.LENGTH_SHORT
                             ).show()
+                    }
+                    else if (type!!.lowercase() == "siswa")
+                    {
+                        if (nisnInput.text!!.isEmpty() || nisInput.text!!.isEmpty() || namaInput.text!!.isEmpty()
+                            || kontakInput.text!!.isEmpty() || emailInput.text!!.isEmpty()
+                            || usernameInput.text!!.isEmpty() || passwordInput.text!!.isEmpty()
+                            || confirmpassInput.text!!.isEmpty()
+                        )
+                        {
+                            Snackbar.make(
+                                binds.root,
+                                "Mohon isi semua data!",
+                                Snackbar.LENGTH_SHORT
+                            )
+                                .show()
                         }
+                        else if (passwordInput.text.toString() != confirmpassInput.text.toString())
+                            Snackbar.make(
+                                binds.root,
+                                "Kata sandi tidak sama!",
+                                Snackbar.LENGTH_SHORT
+                            ).show()
+                    }
                 }
-                Toast.makeText(this@RegisterActivity, "Registrasi sukses!", Toast.LENGTH_SHORT)
-                    .show()
-                finish()
+
+                loginText.setOnClickListener {
+                    finish()
+                }
             }
         }
+    }
+
+    private fun dataInsert()
+    {
+
     }
 }

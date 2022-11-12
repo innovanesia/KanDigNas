@@ -5,16 +5,11 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Rect
 import android.os.Bundle
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.QueryDocumentSnapshot
 import id.innovanesia.kandignas.databinding.ActivityAuthBinding
 import id.innovanesia.kandignas.frontend.activity.kantin.KantinMenuActivity
 import id.innovanesia.kandignas.frontend.activity.koperasi.KoperasiMenuActivity
@@ -24,9 +19,7 @@ class AuthActivity : AppCompatActivity()
 {
     private lateinit var binds: ActivityAuthBinding
     private lateinit var sharedPreference: SharedPreferences
-    private val keyUser = "key.user_name"
     private val keyType = "key.type"
-    private val db = FirebaseFirestore.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -58,138 +51,11 @@ class AuthActivity : AppCompatActivity()
 
         binds.apply {
             loginButton.setOnClickListener {
-                val username = usernameInput.text.toString()
-                var data: QueryDocumentSnapshot? = null
-                db.collection("users").get()
-                    .addOnCompleteListener { users ->
-                        if (users.isSuccessful)
-                        {
-                            for (docs in users.result)
-                            {
-                                if (username == docs.data["username"])
-                                {
-                                    data = docs
-                                }
-                            }
-                            authCheck(data)
-                        }
-                    }
-                db.collection("kantin").get()
-                    .addOnCompleteListener { kantin ->
-                        if (kantin.isSuccessful)
-                        {
-                            for (docs in kantin.result)
-                            {
-                                if (username == docs.data["username"])
-                                {
-                                    data = docs
-                                }
-                            }
-                            authCheck(data)
-                        }
-                    }
-                db.collection("koperasi").get()
-                    .addOnCompleteListener { koperasi ->
-                        if (koperasi.isSuccessful)
-                        {
-                            for (docs in koperasi.result)
-                            {
-                                if (username == docs.data["username"])
-                                {
-                                    data = docs
-                                }
-                            }
-                            authCheck(data)
-                        }
-                    }
+
             }
 
             registerButton.setOnClickListener {
                 startActivity(Intent(this@AuthActivity, RegisterActivity::class.java))
-            }
-        }
-    }
-
-    private fun authCheck(data: QueryDocumentSnapshot?)
-    {
-        binds.apply {
-            if (data != null)
-            {
-                if (passwordInput.text.toString() == data.data["password"])
-                {
-                    val commit: SharedPreferences.Editor = sharedPreference.edit()
-                    commit.putString(keyUser, data.id)
-                    commit.putString(keyType, data.data["account_type"].toString())
-                    commit.apply()
-                    if (sharedPreference.getString(keyType, null) == "kantin")
-                    {
-                        Toast.makeText(
-                            this@AuthActivity, "Berhasil masuk!", Toast.LENGTH_SHORT
-                        ).show()
-                        startActivity(
-                            Intent(
-                                this@AuthActivity,
-                                KantinMenuActivity::class.java
-                            )
-                        )
-                        finish()
-                    }
-                    else if (sharedPreference.getString(keyType, null) == "koperasi")
-                    {
-                        Toast.makeText(
-                            this@AuthActivity, "Berhasil masuk!", Toast.LENGTH_SHORT
-                        ).show()
-                        startActivity(
-                            Intent(
-                                this@AuthActivity,
-                                KoperasiMenuActivity::class.java
-                            )
-                        )
-                        finish()
-                    }
-                    else if (sharedPreference.getString(keyType, null) == "siswa"
-                        || sharedPreference.getString(keyType, null) == "umum"
-                    )
-                    {
-                        Toast.makeText(
-                            this@AuthActivity, "Berhasil masuk!", Toast.LENGTH_SHORT
-                        ).show()
-                        startActivity(
-                            Intent(
-                                this@AuthActivity,
-                                SiswaMenuActivity::class.java
-                            )
-                        )
-                        finish()
-                    }
-                }
-                else
-                {
-                    Snackbar.make(
-                        binds.root,
-                        "Username atau kata sandi salah!",
-                        Snackbar.LENGTH_SHORT
-                    ).show()
-                    Log.e("Error 1", "Error 1")
-                }
-            }
-            else if (usernameInput.text.toString() == "" || passwordInput.text.toString() == "")
-            {
-                Snackbar.make(
-                    binds.root,
-                    "Gagal untuk masuk.\nMohon periksa kembali!",
-                    Snackbar.LENGTH_SHORT
-                ).show()
-                Log.e("Error 2", "Error 2")
-            }
-            else if (data == null)
-            {
-                Snackbar.make(
-                    binds.root,
-                    "Username tidak ditemukan!",
-                    Snackbar.LENGTH_SHORT
-                ).show()
-                Log.e("Error 3", "Error 3")
             }
         }
     }

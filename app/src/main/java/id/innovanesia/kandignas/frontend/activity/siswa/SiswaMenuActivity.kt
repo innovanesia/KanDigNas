@@ -1,6 +1,5 @@
 package id.innovanesia.kandignas.frontend.activity.siswa
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -12,25 +11,18 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import com.denzcoskun.imageslider.models.SlideModel
-import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.firestore.FirebaseFirestore
 import id.innovanesia.kandignas.R
 import id.innovanesia.kandignas.databinding.ActivitySiswaMenuBinding
 import id.innovanesia.kandignas.frontend.activity.AuthActivity
 import id.innovanesia.kandignas.frontend.activity.features.ScanQRActivity
 import id.innovanesia.kandignas.frontend.activity.features.ShowQRActivity
 import id.innovanesia.kandignas.frontend.activity.features.TransactionHistoryActivity
-import java.text.DecimalFormat
-import java.text.NumberFormat
-import java.util.*
 
 class SiswaMenuActivity : AppCompatActivity()
 {
     private lateinit var binds: ActivitySiswaMenuBinding
     private lateinit var sharedPreference: SharedPreferences
-    private val keyUser = "key.user_name"
     private val keyType = "key.type"
-    private val db = FirebaseFirestore.getInstance()
 
     companion object
     {
@@ -44,7 +36,7 @@ class SiswaMenuActivity : AppCompatActivity()
         setContentView(binds.root)
 
         sharedPreference = getSharedPreferences("KanDigNas", Context.MODE_PRIVATE)
-        val username = sharedPreference.getString(keyUser, null)!!
+        /*val username = sharedPreference.getString(keyUser, null)!!*/
 
         binds.apply {
             setSupportActionBar(toolbar)
@@ -56,10 +48,10 @@ class SiswaMenuActivity : AppCompatActivity()
             else if (sharedPreference.getString(keyType, null) == "umum")
                 toolbar.title = "Umum"
 
-            getDB(username)
+            getDB()
 
             swipeRefreshLayout.setOnRefreshListener {
-                getDB(username)
+                getDB()
             }
 
             setNews()
@@ -144,25 +136,10 @@ class SiswaMenuActivity : AppCompatActivity()
         }
     }
 
-    @SuppressLint("SetTextI18n")
-    private fun getDB(username: String)
+    private fun getDB()
     {
         binds.apply {
-            db.collection("users").document(username).get()
-                .addOnSuccessListener {
-                    mainMenuSiswaLoading.visibility = View.GONE
-                    greetingsText.text = "Hai, ${it.data?.get("fullname")}!"
-                    val format: NumberFormat = DecimalFormat("#,###")
-                    balanceAmount.text = format.format(it.data?.get("balance"))
-                }
-                .addOnFailureListener {
-                    Snackbar.make(
-                        binds.root,
-                        "Something wrong, please try again!",
-                        Snackbar.LENGTH_SHORT
-                    ).show()
-                    it.printStackTrace()
-                }
+
             swipeRefreshLayout.isRefreshing = false
         }
     }

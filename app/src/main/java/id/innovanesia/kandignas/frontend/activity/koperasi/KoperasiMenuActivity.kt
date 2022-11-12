@@ -7,12 +7,11 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import com.denzcoskun.imageslider.models.SlideModel
 import id.innovanesia.kandignas.R
-import id.innovanesia.kandignas.frontend.activity.AuthActivity
 import id.innovanesia.kandignas.databinding.ActivityKoperasiMenuBinding
+import id.innovanesia.kandignas.frontend.activity.AuthActivity
 import id.innovanesia.kandignas.frontend.activity.features.ScanQRActivity
 
 class KoperasiMenuActivity : AppCompatActivity()
