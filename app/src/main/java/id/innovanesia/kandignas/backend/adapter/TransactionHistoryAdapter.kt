@@ -30,7 +30,6 @@ class TransactionHistoryAdapter(val context: Context, private val transaction: A
         holder.bind.apply {
             val format: NumberFormat = DecimalFormat("#,###")
             transactionName.text = transaction[position].name
-            transactionDate.text = transaction[position].transaction_date.toDate().toString()
             if (transaction[position].cash_flow == "in")
             {
                 transactionAmount.setTextColor(ContextCompat.getColor(context, R.color.green))

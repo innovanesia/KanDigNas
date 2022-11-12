@@ -8,36 +8,24 @@ import android.graphics.Rect
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.FirebaseFirestore
 import id.innovanesia.kandignas.R
-import id.innovanesia.kandignas.backend.models.Transactions
 import id.innovanesia.kandignas.databinding.ActivitySelectNominalBinding
 import id.innovanesia.kandignas.databinding.TransferConfirmationDialogBinding
-import id.innovanesia.kandignas.frontend.activity.koperasi.KoperasiMenuActivity
-import java.text.DecimalFormat
-import java.text.NumberFormat
-import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.properties.Delegates
 
 class SelectNominalActivity : AppCompatActivity()
 {
     private lateinit var binds: ActivitySelectNominalBinding
     private lateinit var sharedPreference: SharedPreferences
-    private var targetbalance by Delegates.notNull<Int>()
     private val keyUser = "key.user_name"
-    private val db = FirebaseFirestore.getInstance()
 
     companion object
     {
@@ -53,10 +41,9 @@ class SelectNominalActivity : AppCompatActivity()
         setContentView(binds.root)
         val activity = intent.getStringExtra(ACTIVITY)
         val username = intent.getStringExtra(USERNAME)!!
-        var userbalance: Int? = null
+        val userBalance: Int? = null
 
         sharedPreference = getSharedPreferences("KanDigNas", Context.MODE_PRIVATE)
-        val user = sharedPreference.getString(keyUser, null)!!
 
         binds.apply {
             setSupportActionBar(toolbar)
@@ -66,54 +53,13 @@ class SelectNominalActivity : AppCompatActivity()
 
             if (activity == "siswa")
             {
-                db.collection("users").document(user).get()
-                    .addOnSuccessListener {
-                        userbalance = it.data?.get("balance").toString().toInt()
-                        val format: NumberFormat = DecimalFormat("#,###")
-                        yourBalanceField.text = "Rp ${format.format(userbalance!!.toInt())}"
-                    }
+
             }
             else
             {
                 dividerInfo.visibility = View.GONE
                 yourBalanceContent.visibility = View.GONE
             }
-
-            var document: String? = null
-            var userid: String? = null
-
-            db.collection("users").get()
-                .addOnCompleteListener {
-                    if (it.isSuccessful)
-                    {
-                        for (docs in it.result)
-                        {
-                            if (username == docs.id)
-                            {
-                                document = "users"
-                                userid = docs.id
-                            }
-                        }
-                        if (document != null && userid != null)
-                            getData(document, userid)
-                    }
-                }
-            db.collection("kantin").get()
-                .addOnCompleteListener {
-                    if (it.isSuccessful)
-                    {
-                        for (docs in it.result)
-                        {
-                            if (username == docs.id)
-                            {
-                                document = "kantin"
-                                userid = docs.id
-                            }
-                        }
-                        if (document != null && userid != null)
-                            getData(document, userid)
-                    }
-                }
 
             setNominalButton()
 
@@ -195,28 +141,13 @@ class SelectNominalActivity : AppCompatActivity()
                         dialog.show()
 
                         dialogBinding.apply {
-                            db.collection("users").document(username).get()
-                                .addOnSuccessListener {
-                                    nameTargetField.text = it.data?.get("fullname").toString()
-                                    if (it.data?.get("nik").toString() != "")
-                                    {
-                                        idTarget.text = "NIK"
-                                        idTargetField.text = it.data?.get("nik").toString()
-                                    }
-                                    else
-                                    {
-                                        idTarget.text = "NISN"
-                                        idTargetField.text = it.data?.get("nisn").toString()
-                                    }
-                                    amountTargetField.text = nominalInput.text.toString()
-                                }
 
                             cancelButtonDialog.setOnClickListener {
                                 dialog.dismiss()
                             }
 
                             okButtonDialog.setOnClickListener {
-                                if (userbalance == 0 || userbalance!! < nominalInput.text.toString()
+                                if (userBalance == 0 || userBalance!! < nominalInput.text.toString()
                                         .toInt()
                                 )
                                 {
@@ -235,139 +166,14 @@ class SelectNominalActivity : AppCompatActivity()
                                 }
                                 else
                                 {
-                                    db.collection("users").document(username)
-                                        .update(
-                                            "balance",
-                                            targetbalance.plus(nominalInput.text.toString().toInt())
-                                        )
-
-                                    if (activity == "koperasi")
+                                    /*if (activity == "koperasi")
                                     {
-                                        val date = SimpleDateFormat("MMddyyyy-HH:mm:ss")
-                                        val currentDate = date.format(Date())
-                                        db.collection("users").document(user)
-                                            .collection("transactions").document(currentDate)
-                                            .set(
-                                                Transactions(
-                                                    "Dana Keluar - Transfer Antar Pengguna",
-                                                    nominalInput.text.toString().toInt(),
-                                                    "out",
-                                                    FieldValue.serverTimestamp()
-                                                )
-                                            )
-                                            .addOnSuccessListener {
-                                                db.collection("users").document(username)
-                                                    .collection("transactions").document(currentDate)
-                                                    .set(
-                                                        Transactions(
-                                                            "Dana Masuk - Transfer Antar Pengguna",
-                                                            nominalInput.text.toString().toInt(),
-                                                            "in",
-                                                            FieldValue.serverTimestamp()
-                                                        )
-                                                    )
-                                                Toast.makeText(
-                                                    this@SelectNominalActivity,
-                                                    "Transfer sukses!",
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-                                                startActivity(
-                                                    Intent(
-                                                        this@SelectNominalActivity,
-                                                        TransactionSuccessActivity::class.java
-                                                    ).also {
-                                                        it.putExtra("STATUS", "success")
-                                                        it.putExtra("ACTIVITY", activity)
-                                                        it.putExtra("TARGET_USER", username)
-                                                        it.putExtra(
-                                                            "AMOUNT",
-                                                            nominalInput.text.toString()
-                                                        )
-                                                    }
-                                                )
-                                                finish()
-                                            }
-                                        Toast.makeText(
-                                            this@SelectNominalActivity,
-                                            "Saldo sukses ditambahkan!",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                        startActivity(
-                                            Intent(
-                                                this@SelectNominalActivity,
-                                                KoperasiMenuActivity::class.java
-                                            )
-                                        )
-                                        finish()
+
                                     }
                                     else if (activity == "siswa")
                                     {
-                                        db.collection("users").document(user)
-                                            .update(
-                                                "balance",
-                                                userbalance?.minus(nominalInput.text.toString().toInt())
-                                            )
-                                            .addOnSuccessListener {
-                                                val date = SimpleDateFormat("MMddyyyy-HH:mm:ss")
-                                                val currentDate = date.format(Date())
-                                                db.collection("users").document(user)
-                                                    .collection("transactions").document(currentDate)
-                                                    .set(
-                                                        Transactions(
-                                                            "Dana Keluar - Transfer Antar Pengguna",
-                                                            nominalInput.text.toString().toInt(),
-                                                            "out",
-                                                            FieldValue.serverTimestamp()
-                                                        )
-                                                    )
-                                                    .addOnSuccessListener {
-                                                        db.collection("users").document(username)
-                                                            .collection("transactions").document(currentDate)
-                                                            .set(
-                                                                Transactions(
-                                                                    "Dana Masuk - Transfer Antar Pengguna",
-                                                                    nominalInput.text.toString().toInt(),
-                                                                    "in",
-                                                                    FieldValue.serverTimestamp()
-                                                                )
-                                                            )
-                                                        Toast.makeText(
-                                                            this@SelectNominalActivity,
-                                                            "Transfer sukses!",
-                                                            Toast.LENGTH_SHORT
-                                                        ).show()
-                                                        startActivity(
-                                                            Intent(
-                                                                this@SelectNominalActivity,
-                                                                TransactionSuccessActivity::class.java
-                                                            ).also {
-                                                                it.putExtra("STATUS", "success")
-                                                                it.putExtra("ACTIVITY", activity)
-                                                                it.putExtra("TARGET_USER", username)
-                                                                it.putExtra(
-                                                                    "AMOUNT",
-                                                                    nominalInput.text.toString()
-                                                                )
-                                                            }
-                                                        )
-                                                        finish()
-                                                    }
-                                            }
-                                            .addOnFailureListener {
-                                                startActivity(
-                                                    Intent(
-                                                        this@SelectNominalActivity,
-                                                        TransactionSuccessActivity::class.java
-                                                    ).also {
-                                                        it.putExtra("STATUS", "failed")
-                                                        it.putExtra("ACTIVITY", activity)
-                                                        it.putExtra("TARGET_USER", username)
-                                                        it.putExtra("AMOUNT", nominalInput.text.toString())
-                                                    }
-                                                )
-                                                finish()
-                                            }
-                                    }
+
+                                    }*/
                                 }
                             }
                         }
@@ -411,29 +217,10 @@ class SelectNominalActivity : AppCompatActivity()
     }
 
     @SuppressLint("SetTextI18n")
-    private fun getData(document: String?, userid: String?)
+    private fun getData()
     {
         binds.apply {
-            db.collection(document!!).document(userid!!).get()
-                .addOnSuccessListener {
-                    targetbalance = it.data?.get("balance").toString().toInt()
-                    namaField.text = it.data?.get("fullname").toString()
-                    usernameField.text = it.data?.get("username").toString()
-                    if (it.data?.get("account_type").toString() == "siswa")
-                        typeField.text = "Siswa"
-                    else if (it.data?.get("account_type").toString() == "umum")
-                        typeField.text = "Umum"
-                    else if (it.data?.get("account_type").toString() == "kantin")
-                        typeField.text = "Kantin"
-                }
-                .addOnFailureListener {
-                    onBackPressedDispatcher.onBackPressed()
-                    Toast.makeText(
-                        this@SelectNominalActivity,
-                        "QR Code salah!",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+
         }
     }
 
