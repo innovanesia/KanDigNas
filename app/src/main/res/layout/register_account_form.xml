@@ -170,6 +170,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:hint="NIS (Nomor Induk Siswa)"
                 android:textColorHint="@color/grey"
                 app:boxBackgroundColor="@color/white"
                 app:boxBackgroundMode="filled"
@@ -178,7 +179,6 @@
                 app:boxCornerRadiusTopEnd="16dp"
                 app:boxCornerRadiusTopStart="16dp"
                 app:boxStrokeWidth="0dp"
-                android:hint="NIS (Nomor Induk Siswa)"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/nisn_layout"
@@ -217,7 +217,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="text"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/black"
+                    tools:ignore="TextContrastCheck" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -374,11 +375,11 @@
         android:id="@+id/submit_button"
         android:layout_width="150dp"
         android:layout_height="40dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="24dp"
         android:backgroundTint="@color/submarine"
         app:cardCornerRadius="8dp"
-        app:cardElevation="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/login_text"
+        app:cardElevation="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/already_signed_up_button"
         app:layout_constraintEnd_toEndOf="@+id/form_view"
         app:layout_constraintStart_toStartOf="@+id/form_view">
 
@@ -394,18 +395,27 @@
             tools:ignore="HardcodedText" />
     </com.google.android.material.card.MaterialCardView>
 
-    <TextView
-        android:id="@+id/login_text"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/already_signed_up_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:text="Sudah punya akun? Masuk"
-        android:textColor="@color/white"
-        android:textStyle="bold"
+        android:layout_marginBottom="24dp"
+        app:cardBackgroundColor="@android:color/transparent"
+        app:cardElevation="0dp"
         app:layout_constraintBottom_toTopOf="@+id/build_text"
         app:layout_constraintEnd_toEndOf="@+id/form_view"
-        app:layout_constraintStart_toStartOf="@+id/form_view"
-        tools:ignore="HardcodedText" />
+        app:layout_constraintStart_toStartOf="@+id/form_view">
+
+        <TextView
+            android:id="@+id/login_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/already_signedup"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+    </com.google.android.material.card.MaterialCardView>
 
     <TextView
         android:id="@+id/build_text"

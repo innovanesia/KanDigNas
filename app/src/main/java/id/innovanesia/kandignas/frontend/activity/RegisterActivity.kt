@@ -170,10 +170,10 @@ class RegisterActivity : AppCompatActivity()
                             ).show()
                     }
                 }
+            }
 
-                loginText.setOnClickListener {
-                    finish()
-                }
+            alreadySignedUpButton.setOnClickListener {
+                finish()
             }
         }
     }
