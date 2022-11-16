@@ -2,6 +2,7 @@ package id.innovanesia.kandignas.frontend.activity
 
 import android.graphics.Rect
 import android.os.Bundle
+import android.telephony.ims.RegistrationManager.RegistrationCallback
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -9,7 +10,12 @@ import android.widget.EditText
 import android.widget.RadioButton
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
+import id.innovanesia.kandignas.backend.api.InitAPI
+import id.innovanesia.kandignas.backend.response.LoginRegisterResponse
 import id.innovanesia.kandignas.databinding.RegisterAccountFormBinding
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class RegisterActivity : AppCompatActivity()
 {
@@ -146,6 +152,41 @@ class RegisterActivity : AppCompatActivity()
                                 "Kata sandi tidak sama!",
                                 Snackbar.LENGTH_SHORT
                             ).show()
+                        else
+                        {
+                            InitAPI.api.register(
+                                type!!.lowercase(),
+                                namaInput.text.toString(),
+                                1,
+                                emailInput.text.toString(),
+                                usernameInput.text.toString(),
+                                passwordInput.text.toString(),
+                                "",
+                                "",
+                                niknipInput.text.toString())
+                                .enqueue(object : Callback<LoginRegisterResponse>
+                                {
+                                    override fun onResponse(
+                                        call: Call<LoginRegisterResponse>,
+                                        response: Response<LoginRegisterResponse>
+                                    ) {
+                                      finish()
+                                    }
+
+                                    override fun onFailure(
+                                        call: Call<LoginRegisterResponse>,
+                                        t: Throwable
+                                    ) {
+                                        Snackbar.make(
+                                            binds.root,
+                                            "Gagal",
+                                            Snackbar.LENGTH_SHORT
+                                        ).show()
+                                    }
+
+
+                                })
+                        }
                     }
                     else if (type!!.lowercase() == "siswa")
                     {
@@ -168,6 +209,41 @@ class RegisterActivity : AppCompatActivity()
                                 "Kata sandi tidak sama!",
                                 Snackbar.LENGTH_SHORT
                             ).show()
+                        else
+                        {
+                            InitAPI.api.register(
+                                type!!.lowercase(),
+                                namaInput.text.toString(),
+                                1,
+                                emailInput.text.toString(),
+                                usernameInput.text.toString(),
+                                passwordInput.text.toString(),
+                                nisInput.text.toString(),
+                                nisnInput.text.toString(),
+                                niknipInput.text.toString())
+                                .enqueue(object : Callback<LoginRegisterResponse>
+                                {
+                                    override fun onResponse(
+                                        call: Call<LoginRegisterResponse>,
+                                        response: Response<LoginRegisterResponse>
+                                    ) {
+                                        finish()
+                                    }
+
+                                    override fun onFailure(
+                                        call: Call<LoginRegisterResponse>,
+                                        t: Throwable
+                                    ) {
+                                        Snackbar.make(
+                                            binds.root,
+                                            "Gagal",
+                                            Snackbar.LENGTH_SHORT
+                                        ).show()
+                                    }
+
+
+                                })
+                        }
                     }
                 }
             }

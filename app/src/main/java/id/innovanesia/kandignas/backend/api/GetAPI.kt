@@ -25,6 +25,7 @@ interface GetAPI
         @Field("name") fullName: String,
         @Field("school_id") school_id: Int,
         @Field("email") email: String,
+        @Field("username") username: String,
         @Field("password") password: String,
         @Field("nis") nis: String,
         @Field("nisn") nisn: String,

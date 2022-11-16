@@ -61,9 +61,7 @@ class AuthActivity : AppCompatActivity()
 
         binds.apply {
             loginButton.setOnClickListener {
-                if (usernameInput.text.toString().trim()
-                        .isNotEmpty() && passwordInput.text.toString().trim().isNotEmpty()
-                )
+                if (usernameInput.text.toString().trim().isNotEmpty() && passwordInput.text.toString().trim().isNotEmpty())
                 {
                     InitAPI.api.login(usernameInput.text.toString(), passwordInput.text.toString())
                         .enqueue(object : Callback<LoginRegisterResponse>
