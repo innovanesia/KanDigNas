@@ -2,12 +2,13 @@ package id.innovanesia.kandignas.frontend.activity
 
 import android.graphics.Rect
 import android.os.Bundle
-import android.telephony.ims.RegistrationManager.RegistrationCallback
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.RadioButton
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import id.innovanesia.kandignas.backend.api.InitAPI
@@ -30,27 +31,6 @@ class RegisterActivity : AppCompatActivity()
         viewForm()
     }
 
-    override fun dispatchTouchEvent(event: MotionEvent): Boolean
-    {
-        if (event.action == MotionEvent.ACTION_DOWN)
-        {
-            val v: View? = currentFocus
-            if (v is EditText)
-            {
-                val outRect = Rect()
-                v.getGlobalVisibleRect(outRect)
-                if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt()))
-                {
-                    v.clearFocus()
-                    val imm: InputMethodManager =
-                        getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0)
-                }
-            }
-        }
-        return super.dispatchTouchEvent(event)
-    }
-
     private fun viewForm()
     {
         binds.apply {
@@ -59,7 +39,6 @@ class RegisterActivity : AppCompatActivity()
             toolbar.setNavigationOnClickListener {
                 finish()
             }
-
             var type: String? = null
 
             niknipLayout.visibility = View.GONE
@@ -154,38 +133,7 @@ class RegisterActivity : AppCompatActivity()
                             ).show()
                         else
                         {
-                            InitAPI.api.register(
-                                type!!.lowercase(),
-                                namaInput.text.toString(),
-                                1,
-                                emailInput.text.toString(),
-                                usernameInput.text.toString(),
-                                passwordInput.text.toString(),
-                                "",
-                                "",
-                                niknipInput.text.toString())
-                                .enqueue(object : Callback<LoginRegisterResponse>
-                                {
-                                    override fun onResponse(
-                                        call: Call<LoginRegisterResponse>,
-                                        response: Response<LoginRegisterResponse>
-                                    ) {
-                                      finish()
-                                    }
-
-                                    override fun onFailure(
-                                        call: Call<LoginRegisterResponse>,
-                                        t: Throwable
-                                    ) {
-                                        Snackbar.make(
-                                            binds.root,
-                                            "Gagal",
-                                            Snackbar.LENGTH_SHORT
-                                        ).show()
-                                    }
-
-
-                                })
+                            dataInsert(type!!)
                         }
                     }
                     else if (type!!.lowercase() == "siswa")
@@ -211,38 +159,7 @@ class RegisterActivity : AppCompatActivity()
                             ).show()
                         else
                         {
-                            InitAPI.api.register(
-                                type!!.lowercase(),
-                                namaInput.text.toString(),
-                                1,
-                                emailInput.text.toString(),
-                                usernameInput.text.toString(),
-                                passwordInput.text.toString(),
-                                nisInput.text.toString(),
-                                nisnInput.text.toString(),
-                                niknipInput.text.toString())
-                                .enqueue(object : Callback<LoginRegisterResponse>
-                                {
-                                    override fun onResponse(
-                                        call: Call<LoginRegisterResponse>,
-                                        response: Response<LoginRegisterResponse>
-                                    ) {
-                                        finish()
-                                    }
-
-                                    override fun onFailure(
-                                        call: Call<LoginRegisterResponse>,
-                                        t: Throwable
-                                    ) {
-                                        Snackbar.make(
-                                            binds.root,
-                                            "Gagal",
-                                            Snackbar.LENGTH_SHORT
-                                        ).show()
-                                    }
-
-
-                                })
+                            dataInsert(type!!)
                         }
                     }
                 }
@@ -254,8 +171,87 @@ class RegisterActivity : AppCompatActivity()
         }
     }
 
-    private fun dataInsert()
+    private fun dataInsert(type: String)
     {
+        binds.apply {
+            InitAPI.api.register(
+                type.lowercase(),
+                namaInput.text.toString(),
+                1,
+                emailInput.text.toString(),
+                usernameInput.text.toString(),
+                passwordInput.text.toString(),
+                kontakInput.text.toString(),
+                if (type == "kantin" || type == "umum")
+                    ""
+                else
+                    nisInput.text.toString(),
+                if (type == "kantin" || type == "umum")
+                    ""
+                else
+                    nisnInput.text.toString(),
+                niknipInput.text.toString()
+            ).enqueue(object : Callback<LoginRegisterResponse>
+            {
+                override fun onResponse(
+                    call: Call<LoginRegisterResponse>,
+                    response: Response<LoginRegisterResponse>
+                )
+                {
+                    Log.e("Response Register", response.body().toString())
+                    if (response.body()?.message == "User authenticated successfully")
+                    {
+                        finish()
+                        Toast.makeText(
+                            this@RegisterActivity,
+                            "Berhasil terdaftar!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                    else if (response.body() == null)
+                    {
+                        Snackbar.make(
+                            binds.root,
+                            "Registrasi gagal. Mohon periksa ulang formulir!",
+                            Snackbar.LENGTH_SHORT
+                        ).show()
+                    }
+                }
 
+                override fun onFailure(
+                    call: Call<LoginRegisterResponse>,
+                    t: Throwable
+                )
+                {
+                    t.printStackTrace()
+                    Snackbar.make(
+                        binds.root,
+                        "Gagal terdaftar",
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                }
+            })
+        }
+    }
+
+    override fun dispatchTouchEvent(event: MotionEvent): Boolean
+    {
+        if (event.action == MotionEvent.ACTION_DOWN)
+        {
+            val v: View? = currentFocus
+            if (v is EditText)
+            {
+                val outRect = Rect()
+                v.getGlobalVisibleRect(outRect)
+                if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt()))
+                {
+                    v.clearFocus()
+                    val imm: InputMethodManager =
+                        getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0)
+                }
+            }
+        }
+        return super.dispatchTouchEvent(event)
     }
 }

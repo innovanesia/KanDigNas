@@ -267,6 +267,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/kontak_layout"
+                app:placeholderText="Email harus unik."
                 tools:ignore="HardcodedText">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -296,6 +297,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/email_layout"
+                app:placeholderText="Username harus unik dan minimal 6 karakter"
                 tools:ignore="HardcodedText">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -327,6 +329,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/username_layout"
                 app:passwordToggleEnabled="true"
                 app:passwordToggleTint="@color/black"
+                app:placeholderText="Kata sandi minimal 8 karakter"
                 tools:ignore="HardcodedText">
 
                 <com.google.android.material.textfield.TextInputEditText

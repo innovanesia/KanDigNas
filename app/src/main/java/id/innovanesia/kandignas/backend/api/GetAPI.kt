@@ -27,6 +27,7 @@ interface GetAPI
         @Field("email") email: String,
         @Field("username") username: String,
         @Field("password") password: String,
+        @Field("phone") phone: String,
         @Field("nis") nis: String,
         @Field("nisn") nisn: String,
         @Field("nik") nik: String,
