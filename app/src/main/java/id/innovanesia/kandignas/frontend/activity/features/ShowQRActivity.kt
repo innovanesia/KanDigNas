@@ -11,7 +11,6 @@ import androidmads.library.qrgenearator.QRGContents
 import androidmads.library.qrgenearator.QRGEncoder
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.firestore.FirebaseFirestore
 import id.innovanesia.kandignas.databinding.ActivityShowQrBinding
 
 class ShowQRActivity : AppCompatActivity()
@@ -20,7 +19,6 @@ class ShowQRActivity : AppCompatActivity()
     private lateinit var bitmap: Bitmap
     private lateinit var qrEncoder: QRGEncoder
     private val keyUser = "key.user_name"
-    private val db = FirebaseFirestore.getInstance()
     private lateinit var sharedPreference: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?)
@@ -39,7 +37,7 @@ class ShowQRActivity : AppCompatActivity()
 
             val user = sharedPreference.getString(keyUser, null)
 
-            getDB(user!!)
+            getDB()
 
             initQR(user)
 
@@ -77,21 +75,8 @@ class ShowQRActivity : AppCompatActivity()
         qrEncoder = QRGEncoder(user, null, QRGContents.Type.TEXT, dimen)
     }
 
-    private fun getDB(username: String)
+    private fun getDB()
     {
-        db.collection("users").document(username).get()
-            .addOnSuccessListener {
-                binds.apply {
-                    if (it.data?.get("nisn") == "")
-                    {
-                        idText.text = it.data?.get("nik").toString()
-                    }
-                    else
-                    {
-                        idText.text = it.data?.get("nisn").toString()
-                    }
-                    usernameText.text = it.data?.get("fullname").toString()
-                }
-            }
+
     }
 }

@@ -1,6 +1,5 @@
 package id.innovanesia.kandignas.frontend.activity.siswa
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -12,25 +11,26 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import com.denzcoskun.imageslider.models.SlideModel
-import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.firestore.FirebaseFirestore
 import id.innovanesia.kandignas.R
+import id.innovanesia.kandignas.backend.api.InitAPI
+import id.innovanesia.kandignas.backend.response.AccountResponse
 import id.innovanesia.kandignas.databinding.ActivitySiswaMenuBinding
 import id.innovanesia.kandignas.frontend.activity.AuthActivity
 import id.innovanesia.kandignas.frontend.activity.features.ScanQRActivity
 import id.innovanesia.kandignas.frontend.activity.features.ShowQRActivity
 import id.innovanesia.kandignas.frontend.activity.features.TransactionHistoryActivity
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.text.DecimalFormat
 import java.text.NumberFormat
-import java.util.*
 
 class SiswaMenuActivity : AppCompatActivity()
 {
     private lateinit var binds: ActivitySiswaMenuBinding
     private lateinit var sharedPreference: SharedPreferences
-    private val keyUser = "key.user_name"
+    private val keyToken = "key.token"
     private val keyType = "key.type"
-    private val db = FirebaseFirestore.getInstance()
 
     companion object
     {
@@ -44,7 +44,7 @@ class SiswaMenuActivity : AppCompatActivity()
         setContentView(binds.root)
 
         sharedPreference = getSharedPreferences("KanDigNas", Context.MODE_PRIVATE)
-        val username = sharedPreference.getString(keyUser, null)!!
+        val token = sharedPreference.getString(keyToken, null)!!
 
         binds.apply {
             setSupportActionBar(toolbar)
@@ -56,10 +56,10 @@ class SiswaMenuActivity : AppCompatActivity()
             else if (sharedPreference.getString(keyType, null) == "umum")
                 toolbar.title = "Umum"
 
-            getDB(username)
+            getDB(token)
 
             swipeRefreshLayout.setOnRefreshListener {
-                getDB(username)
+                getDB(token)
             }
 
             setNews()
@@ -109,7 +109,7 @@ class SiswaMenuActivity : AppCompatActivity()
                 delete.clear().apply()
                 Toast.makeText(
                     this@SiswaMenuActivity,
-                    "Signed out sucessfully!",
+                    "Berhasil keluar!",
                     Toast.LENGTH_SHORT
                 ).show()
                 startActivity(Intent(this@SiswaMenuActivity, AuthActivity::class.java))
@@ -144,25 +144,36 @@ class SiswaMenuActivity : AppCompatActivity()
         }
     }
 
-    @SuppressLint("SetTextI18n")
-    private fun getDB(username: String)
+    private fun getDB(token: String)
     {
         binds.apply {
-            db.collection("users").document(username).get()
-                .addOnSuccessListener {
-                    mainMenuSiswaLoading.visibility = View.GONE
-                    greetingsText.text = "Hai, ${it.data?.get("fullname")}!"
-                    val format: NumberFormat = DecimalFormat("#,###")
-                    balanceAmount.text = format.format(it.data?.get("balance"))
-                }
-                .addOnFailureListener {
-                    Snackbar.make(
-                        binds.root,
-                        "Something wrong, please try again!",
-                        Snackbar.LENGTH_SHORT
-                    ).show()
-                    it.printStackTrace()
-                }
+            InitAPI.api.getAccount("Bearer $token")
+                .enqueue(object : Callback<AccountResponse>
+                {
+                    override fun onResponse(
+                        call: Call<AccountResponse>,
+                        response: Response<AccountResponse>
+                    )
+                    {
+                        greetingsText.text = response.body()!!.user.fullname
+                        val format: NumberFormat = DecimalFormat("#,###")
+                        balanceAmount.text = format.format(response.body()!!.user.balance)
+                    }
+
+                    override fun onFailure(call: Call<AccountResponse>, t: Throwable)
+                    {
+                        val delete: SharedPreferences.Editor = sharedPreference.edit()
+                        delete.clear().apply()
+                        Toast.makeText(
+                            this@SiswaMenuActivity,
+                            "Gagal masuk! Mohon periksa koneksi.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        startActivity(Intent(this@SiswaMenuActivity, AuthActivity::class.java))
+                        finish()
+                    }
+                })
+            mainMenuSiswaLoading.visibility = View.GONE
             swipeRefreshLayout.isRefreshing = false
         }
     }

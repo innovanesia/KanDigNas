@@ -13,20 +13,22 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.QueryDocumentSnapshot
+import id.innovanesia.kandignas.backend.api.InitAPI
+import id.innovanesia.kandignas.backend.response.LoginRegisterResponse
 import id.innovanesia.kandignas.databinding.ActivityAuthBinding
 import id.innovanesia.kandignas.frontend.activity.kantin.KantinMenuActivity
 import id.innovanesia.kandignas.frontend.activity.koperasi.KoperasiMenuActivity
 import id.innovanesia.kandignas.frontend.activity.siswa.SiswaMenuActivity
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class AuthActivity : AppCompatActivity()
 {
     private lateinit var binds: ActivityAuthBinding
     private lateinit var sharedPreference: SharedPreferences
-    private val keyUser = "key.user_name"
+    private val keyToken = "key.token"
     private val keyType = "key.type"
-    private val db = FirebaseFirestore.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -35,6 +37,7 @@ class AuthActivity : AppCompatActivity()
         setContentView(binds.root)
 
         sharedPreference = getSharedPreferences("KanDigNas", Context.MODE_PRIVATE)
+
         if (sharedPreference.getString(keyType, null) != null)
         {
             if (sharedPreference.getString(keyType, null) == "kantin")
@@ -58,50 +61,58 @@ class AuthActivity : AppCompatActivity()
 
         binds.apply {
             loginButton.setOnClickListener {
-                val username = usernameInput.text.toString()
-                var data: QueryDocumentSnapshot? = null
-                db.collection("users").get()
-                    .addOnCompleteListener { users ->
-                        if (users.isSuccessful)
+                if (usernameInput.text.toString().trim().isNotEmpty() && passwordInput.text.toString().trim().isNotEmpty())
+                {
+                    InitAPI.api.login(usernameInput.text.toString(), passwordInput.text.toString())
+                        .enqueue(object : Callback<LoginRegisterResponse>
                         {
-                            for (docs in users.result)
+                            override fun onResponse(
+                                call: Call<LoginRegisterResponse>,
+                                response: Response<LoginRegisterResponse>
+                            )
                             {
-                                if (username == docs.data["username"])
+                                Log.e("Response", response.body().toString())
+                                if (response.body()!!.user.type == "koperasi"
+                                    || response.body()!!.user.type == "kantin"
+                                    || response.body()!!.user.type == "siswa"
+                                    || response.body()!!.user.type == "umum"
+                                )
                                 {
-                                    data = docs
+                                    val commit: SharedPreferences.Editor = sharedPreference.edit()
+                                    commit.putString(keyToken, response.body()!!.access_token)
+                                    commit.putString(keyType, response.body()!!.user.type)
+                                    commit.apply()
+                                    startMainMenu(response.body()!!.user.type)
+                                }
+                                else
+                                {
+                                    Snackbar.make(
+                                        binds.root,
+                                        "Pengguna tidak terdaftar sebagai akun publik.",
+                                        Snackbar.LENGTH_SHORT
+                                    ).show()
                                 }
                             }
-                            authCheck(data)
-                        }
-                    }
-                db.collection("kantin").get()
-                    .addOnCompleteListener { kantin ->
-                        if (kantin.isSuccessful)
-                        {
-                            for (docs in kantin.result)
+
+                            override fun onFailure(call: Call<LoginRegisterResponse>, t: Throwable)
                             {
-                                if (username == docs.data["username"])
-                                {
-                                    data = docs
-                                }
+                                Snackbar.make(
+                                    binds.root,
+                                    "Gagal masuk, mohon periksa kembali!",
+                                    Snackbar.LENGTH_SHORT
+                                ).show()
+                                t.printStackTrace()
                             }
-                            authCheck(data)
-                        }
-                    }
-                db.collection("koperasi").get()
-                    .addOnCompleteListener { koperasi ->
-                        if (koperasi.isSuccessful)
-                        {
-                            for (docs in koperasi.result)
-                            {
-                                if (username == docs.data["username"])
-                                {
-                                    data = docs
-                                }
-                            }
-                            authCheck(data)
-                        }
-                    }
+                        })
+                }
+                else
+                {
+                    Snackbar.make(
+                        binds.root,
+                        "Mohon isi semua kolom yang kosong!",
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                }
             }
 
             registerButton.setOnClickListener {
@@ -110,86 +121,61 @@ class AuthActivity : AppCompatActivity()
         }
     }
 
-    private fun authCheck(data: QueryDocumentSnapshot?)
+    private fun startMainMenu(type: String)
     {
-        binds.apply {
-            if (data != null)
+        when (type)
+        {
+            "koperasi" ->
             {
-                if (passwordInput.text.toString() == data.data["password"])
-                {
-                    val commit: SharedPreferences.Editor = sharedPreference.edit()
-                    commit.putString(keyUser, data.id)
-                    commit.putString(keyType, data.data["account_type"].toString())
-                    commit.apply()
-                    if (sharedPreference.getString(keyType, null) == "kantin")
-                    {
-                        Toast.makeText(
-                            this@AuthActivity, "Berhasil masuk!", Toast.LENGTH_SHORT
-                        ).show()
-                        startActivity(
-                            Intent(
-                                this@AuthActivity,
-                                KantinMenuActivity::class.java
-                            )
-                        )
-                        finish()
-                    }
-                    else if (sharedPreference.getString(keyType, null) == "koperasi")
-                    {
-                        Toast.makeText(
-                            this@AuthActivity, "Berhasil masuk!", Toast.LENGTH_SHORT
-                        ).show()
-                        startActivity(
-                            Intent(
-                                this@AuthActivity,
-                                KoperasiMenuActivity::class.java
-                            )
-                        )
-                        finish()
-                    }
-                    else if (sharedPreference.getString(keyType, null) == "siswa"
-                        || sharedPreference.getString(keyType, null) == "umum"
+                startActivity(
+                    Intent(
+                        this@AuthActivity, KoperasiMenuActivity::class.java
                     )
-                    {
-                        Toast.makeText(
-                            this@AuthActivity, "Berhasil masuk!", Toast.LENGTH_SHORT
-                        ).show()
-                        startActivity(
-                            Intent(
-                                this@AuthActivity,
-                                SiswaMenuActivity::class.java
-                            )
-                        )
-                        finish()
-                    }
-                }
-                else
-                {
-                    Snackbar.make(
-                        binds.root,
-                        "Username atau kata sandi salah!",
-                        Snackbar.LENGTH_SHORT
-                    ).show()
-                    Log.e("Error 1", "Error 1")
-                }
-            }
-            else if (usernameInput.text.toString() == "" || passwordInput.text.toString() == "")
-            {
-                Snackbar.make(
-                    binds.root,
-                    "Gagal untuk masuk.\nMohon periksa kembali!",
-                    Snackbar.LENGTH_SHORT
+                )
+                Toast.makeText(
+                    this@AuthActivity,
+                    "Berhasil masuk!",
+                    Toast.LENGTH_SHORT
                 ).show()
-                Log.e("Error 2", "Error 2")
             }
-            else if (data == null)
+            "kantin" ->
             {
-                Snackbar.make(
-                    binds.root,
-                    "Username tidak ditemukan!",
-                    Snackbar.LENGTH_SHORT
+                startActivity(
+                    Intent(
+                        this@AuthActivity, KantinMenuActivity::class.java
+                    )
+                )
+                Toast.makeText(
+                    this@AuthActivity,
+                    "Berhasil masuk!",
+                    Toast.LENGTH_SHORT
                 ).show()
-                Log.e("Error 3", "Error 3")
+            }
+            "siswa" ->
+            {
+                startActivity(
+                    Intent(
+                        this@AuthActivity, SiswaMenuActivity::class.java
+                    )
+                )
+                Toast.makeText(
+                    this@AuthActivity,
+                    "Berhasil masuk!",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            "umum" ->
+            {
+                startActivity(
+                    Intent(
+                        this@AuthActivity, SiswaMenuActivity::class.java
+                    )
+                )
+                Toast.makeText(
+                    this@AuthActivity,
+                    "Berhasil masuk!",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }

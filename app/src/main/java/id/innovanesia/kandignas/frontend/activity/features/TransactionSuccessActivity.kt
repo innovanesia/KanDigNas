@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import com.bumptech.glide.Glide
-import com.google.firebase.firestore.FirebaseFirestore
 import id.innovanesia.kandignas.R
 import id.innovanesia.kandignas.databinding.ActivityTransactionSuccessBinding
 import id.innovanesia.kandignas.frontend.activity.koperasi.KoperasiMenuActivity
@@ -15,7 +14,6 @@ import id.innovanesia.kandignas.frontend.activity.siswa.SiswaMenuActivity
 class TransactionSuccessActivity : AppCompatActivity()
 {
     private lateinit var binds: ActivityTransactionSuccessBinding
-    private val db = FirebaseFirestore.getInstance()
 
     companion object
     {
@@ -34,8 +32,8 @@ class TransactionSuccessActivity : AppCompatActivity()
 
         val status = intent.getStringExtra(STATUS)!!
         val activity = intent.getStringExtra(ACTIVITY)!!
-        val user = intent.getStringExtra(TARGET_USER)!!
-        val amount = intent.getStringExtra(AMOUNT)!!
+        /*val user = intent.getStringExtra(TARGET_USER)!!
+        val amount = intent.getStringExtra(AMOUNT)!!*/
 
         binds.apply {
             if (status == "success")
@@ -44,21 +42,6 @@ class TransactionSuccessActivity : AppCompatActivity()
                     .load(R.drawable.success_alert)
                     .into(successIllustration)
                 transactionStatus.text = "Transaksi Sukses!"
-                db.collection("users").document(user).get()
-                    .addOnSuccessListener {
-                        nameContent.text = it.data?.get("fullname").toString()
-                        if (it.data?.get("account_type").toString() == "umum")
-                        {
-                            idTextDesc.text = "NIK"
-                            idContent.text = it.data?.get("nik").toString()
-                        }
-                        else
-                        {
-                            idTextDesc.text = "NISN"
-                            idContent.text = it.data?.get("nisn").toString()
-                        }
-                        amountContent.text = "Rp ${amount.format("#,###")}"
-                    }
             }
             else if (status == "failed")
             {
@@ -66,21 +49,6 @@ class TransactionSuccessActivity : AppCompatActivity()
                     .load(R.drawable.failed_alert)
                     .into(successIllustration)
                 transactionStatus.text = "Transaksi Gagal!"
-                db.collection("users").document(user).get()
-                    .addOnSuccessListener {
-                        nameContent.text = it.data?.get("fullname").toString()
-                        if (it.data?.get("account_type").toString() == "umum")
-                        {
-                            idTextDesc.text = "NIK"
-                            idContent.text = it.data?.get("nik").toString()
-                        }
-                        else
-                        {
-                            idTextDesc.text = "NISN"
-                            idContent.text = it.data?.get("nisn").toString()
-                        }
-                        amountContent.text = "Rp ${amount.format("#,###")}"
-                    }
                 seeTransactionHistoryButton.visibility = View.GONE
             }
 

@@ -1,9 +1,10 @@
 <resources>
     <string name="app_name">KanDigNas</string>
     <string name="auth_title">Kantin Digital Nasional</string>
-    <string name="build">© Innovanesia 2022\nBuild 0.3.1.internal_dev.221027–2355</string>
+    <string name="build">© Innovanesia 2022\nBuild 0.4.0.internal_dev.221115–0121</string>
     <string name="login">Masuk</string>
     <string name="register">Daftar</string>
+    <string name="already_signedup"><u>Sudah punya akun? Masuk</u></string>
     <string name="logout">Keluar</string>
     <string name="username">Username</string>
     <string name="password">Kata Sandi</string>

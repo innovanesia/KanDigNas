@@ -7,18 +7,26 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import com.denzcoskun.imageslider.models.SlideModel
 import id.innovanesia.kandignas.R
-import id.innovanesia.kandignas.frontend.activity.AuthActivity
+import id.innovanesia.kandignas.backend.api.InitAPI
+import id.innovanesia.kandignas.backend.response.AccountResponse
 import id.innovanesia.kandignas.databinding.ActivityKoperasiMenuBinding
+import id.innovanesia.kandignas.frontend.activity.AuthActivity
 import id.innovanesia.kandignas.frontend.activity.features.ScanQRActivity
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.text.DecimalFormat
+import java.text.NumberFormat
 
 class KoperasiMenuActivity : AppCompatActivity()
 {
     private lateinit var binds: ActivityKoperasiMenuBinding
     private lateinit var sharedPreference: SharedPreferences
+    private  val keyToken ="key.token"
+    private  val keyType ="key.type"
 
     companion object
     {
@@ -32,11 +40,14 @@ class KoperasiMenuActivity : AppCompatActivity()
         setContentView(binds.root)
 
         sharedPreference = getSharedPreferences("KanDigNas", Context.MODE_PRIVATE)
+        val token = sharedPreference.getString(keyToken, null)!!
 
         binds.apply {
             setSupportActionBar(toolbar)
 
             setNews()
+
+           getDB(token)
 
             topupUserButton.setOnClickListener {
                 startActivity(Intent(this@KoperasiMenuActivity, ScanQRActivity::class.java)
@@ -97,5 +108,36 @@ class KoperasiMenuActivity : AppCompatActivity()
         binds.apply {
             newsCarousel.setImageList(news)
         }
+    }
+    private fun getDB(token : String)
+    {
+         binds.apply {
+             InitAPI.api.getAccount("Bearer $token")
+                 .enqueue(object : Callback<AccountResponse>
+                 {
+                     override fun onResponse(
+                         call: Call<AccountResponse>,
+                         response: Response<AccountResponse>
+                     )
+                     {
+                         greetingsText.text = response.body()!!.user.fullname
+                     }
+
+                     override fun onFailure(call: Call<AccountResponse>, t: Throwable)
+                     {
+                         val delete: SharedPreferences.Editor = sharedPreference.edit()
+                         delete.clear().apply()
+                         Toast.makeText(
+                             this@KoperasiMenuActivity,
+                             "Gagal masuk! Mohon periksa koneksi.",
+                             Toast.LENGTH_SHORT
+                         ).show()
+                         startActivity(Intent(this@KoperasiMenuActivity, AuthActivity::class.java))
+                         finish()
+                     }
+                 })
+
+         }
+
     }
 }
