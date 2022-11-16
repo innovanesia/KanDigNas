@@ -12,16 +12,24 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import com.denzcoskun.imageslider.models.SlideModel
 import id.innovanesia.kandignas.R
+import id.innovanesia.kandignas.backend.api.InitAPI
+import id.innovanesia.kandignas.backend.response.AccountResponse
 import id.innovanesia.kandignas.databinding.ActivitySiswaMenuBinding
 import id.innovanesia.kandignas.frontend.activity.AuthActivity
 import id.innovanesia.kandignas.frontend.activity.features.ScanQRActivity
 import id.innovanesia.kandignas.frontend.activity.features.ShowQRActivity
 import id.innovanesia.kandignas.frontend.activity.features.TransactionHistoryActivity
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.text.DecimalFormat
+import java.text.NumberFormat
 
 class SiswaMenuActivity : AppCompatActivity()
 {
     private lateinit var binds: ActivitySiswaMenuBinding
     private lateinit var sharedPreference: SharedPreferences
+    private val keyToken = "key.token"
     private val keyType = "key.type"
 
     companion object
@@ -36,7 +44,7 @@ class SiswaMenuActivity : AppCompatActivity()
         setContentView(binds.root)
 
         sharedPreference = getSharedPreferences("KanDigNas", Context.MODE_PRIVATE)
-        /*val username = sharedPreference.getString(keyUser, null)!!*/
+        val token = sharedPreference.getString(keyToken, null)!!
 
         binds.apply {
             setSupportActionBar(toolbar)
@@ -48,10 +56,10 @@ class SiswaMenuActivity : AppCompatActivity()
             else if (sharedPreference.getString(keyType, null) == "umum")
                 toolbar.title = "Umum"
 
-            getDB()
+            getDB(token)
 
             swipeRefreshLayout.setOnRefreshListener {
-                getDB()
+                getDB(token)
             }
 
             setNews()
@@ -101,7 +109,7 @@ class SiswaMenuActivity : AppCompatActivity()
                 delete.clear().apply()
                 Toast.makeText(
                     this@SiswaMenuActivity,
-                    "Signed out sucessfully!",
+                    "Berhasil keluar!",
                     Toast.LENGTH_SHORT
                 ).show()
                 startActivity(Intent(this@SiswaMenuActivity, AuthActivity::class.java))
@@ -136,10 +144,36 @@ class SiswaMenuActivity : AppCompatActivity()
         }
     }
 
-    private fun getDB()
+    private fun getDB(token: String)
     {
         binds.apply {
+            InitAPI.api.getAccount("Bearer $token")
+                .enqueue(object : Callback<AccountResponse>
+                {
+                    override fun onResponse(
+                        call: Call<AccountResponse>,
+                        response: Response<AccountResponse>
+                    )
+                    {
+                        greetingsText.text = response.body()!!.user.fullname
+                        val format: NumberFormat = DecimalFormat("#,###")
+                        balanceAmount.text = format.format(response.body()!!.user.balance)
+                    }
 
+                    override fun onFailure(call: Call<AccountResponse>, t: Throwable)
+                    {
+                        val delete: SharedPreferences.Editor = sharedPreference.edit()
+                        delete.clear().apply()
+                        Toast.makeText(
+                            this@SiswaMenuActivity,
+                            "Gagal masuk! Mohon periksa koneksi.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        startActivity(Intent(this@SiswaMenuActivity, AuthActivity::class.java))
+                        finish()
+                    }
+                })
+            mainMenuSiswaLoading.visibility = View.GONE
             swipeRefreshLayout.isRefreshing = false
         }
     }

@@ -10,6 +10,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import id.innovanesia.kandignas.backend.api.InitAPI
@@ -126,26 +127,58 @@ class AuthActivity : AppCompatActivity()
     {
         when (type)
         {
-            "koperasi" -> startActivity(
-                Intent(
-                    this@AuthActivity, KoperasiMenuActivity::class.java
+            "koperasi" ->
+            {
+                startActivity(
+                    Intent(
+                        this@AuthActivity, KoperasiMenuActivity::class.java
+                    )
                 )
-            )
-            "kantin" -> startActivity(
-                Intent(
-                    this@AuthActivity, KantinMenuActivity::class.java
+                Toast.makeText(
+                    this@AuthActivity,
+                    "Berhasil masuk!",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            "kantin" ->
+            {
+                startActivity(
+                    Intent(
+                        this@AuthActivity, KantinMenuActivity::class.java
+                    )
                 )
-            )
-            "siswa" -> startActivity(
-                Intent(
-                    this@AuthActivity, SiswaMenuActivity::class.java
+                Toast.makeText(
+                    this@AuthActivity,
+                    "Berhasil masuk!",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            "siswa" ->
+            {
+                startActivity(
+                    Intent(
+                        this@AuthActivity, SiswaMenuActivity::class.java
+                    )
                 )
-            )
-            "umum" -> startActivity(
-                Intent(
-                    this@AuthActivity, SiswaMenuActivity::class.java
+                Toast.makeText(
+                    this@AuthActivity,
+                    "Berhasil masuk!",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            "umum" ->
+            {
+                startActivity(
+                    Intent(
+                        this@AuthActivity, SiswaMenuActivity::class.java
+                    )
                 )
-            )
+                Toast.makeText(
+                    this@AuthActivity,
+                    "Berhasil masuk!",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
     }
 

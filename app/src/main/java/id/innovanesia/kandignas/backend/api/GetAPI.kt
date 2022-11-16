@@ -1,9 +1,12 @@
 package id.innovanesia.kandignas.backend.api
 
+import id.innovanesia.kandignas.backend.response.AccountResponse
 import id.innovanesia.kandignas.backend.response.LoginRegisterResponse
 import retrofit2.Call
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
+import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.POST
 
 interface GetAPI
@@ -27,4 +30,9 @@ interface GetAPI
         @Field("nisn") nisn: String,
         @Field("nik") nik: String,
     ): Call<LoginRegisterResponse>
+
+    @GET("account")
+    fun getAccount(
+        @Header("Authorization") token: String
+    ) : Call<AccountResponse>
 }
