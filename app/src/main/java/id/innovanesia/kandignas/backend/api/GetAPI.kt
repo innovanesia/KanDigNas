@@ -2,6 +2,7 @@ package id.innovanesia.kandignas.backend.api
 
 import id.innovanesia.kandignas.backend.response.AccountResponse
 import id.innovanesia.kandignas.backend.response.LoginRegisterResponse
+import id.innovanesia.kandignas.backend.response.TransactionFlowResponse
 import retrofit2.Call
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
@@ -37,4 +38,36 @@ interface GetAPI
     fun getAccount(
         @Header("Authorization") token: String
     ) : Call<AccountResponse>
+
+    @FormUrlEncoded
+    @POST("account/topup")
+    fun topupTransaction(
+        @Header("Authorization") token: String,
+        @Field("user_to") id: Int,
+        @Field("amount") amount: Int
+    ) : Call<TransactionFlowResponse>
+
+    @FormUrlEncoded
+    @POST("account/payment")
+    fun paymentTransaction(
+        @Header("Authorization") token: String,
+        @Field("user_to") id: Int,
+        @Field("amount") amount: Int
+    ) : Call<TransactionFlowResponse>
+
+    @FormUrlEncoded
+    @POST("account/transfer")
+    fun transferTransaction(
+        @Header("Authorization") token: String,
+        @Field("user_to") id: Int,
+        @Field("amount") amount: Int
+    ) : Call<TransactionFlowResponse>
+
+    @FormUrlEncoded
+    @POST("account/withdraw")
+    fun withdrawTransaction(
+        @Header("Authorization") token: String,
+        @Field("user_to") id: Int,
+        @Field("amount") amount: Int
+    ) : Call<TransactionFlowResponse>
 }

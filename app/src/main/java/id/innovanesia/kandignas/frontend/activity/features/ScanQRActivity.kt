@@ -30,9 +30,7 @@ class ScanQRActivity : AppCompatActivity()
         super.onCreate(savedInstanceState)
         binds = ActivityScanQrBinding.inflate(layoutInflater)
         setContentView(binds.root)
-
         val activity = intent.getStringExtra(ACTIVITY)
-
         val permission = ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA)
         if (permission != PackageManager.PERMISSION_GRANTED)
         {
@@ -59,28 +57,16 @@ class ScanQRActivity : AppCompatActivity()
                 isFlashEnabled = false
 
                 decodeCallback = DecodeCallback { res ->
-                    if (activity == "siswa")
-                    {
-                        startActivity(Intent(this@ScanQRActivity, SelectNominalActivity::class.java)
-                            .also { int ->
-                                int.putExtra("USERNAME", res.text)
-                                int.putExtra("ACTIVITY", activity)
-                            })
-                        finish()
-                    }
-                    else if (activity == "koperasi")
-                    {
-                        startActivity(Intent(this@ScanQRActivity, SelectNominalActivity::class.java)
-                            .also { int ->
-                                int.putExtra("USERNAME", res.text)
-                                int.putExtra("ACTIVITY", activity)
-                            })
-                        finish()
-                    }
+                    startActivity(Intent(this@ScanQRActivity, SelectNominalActivity::class.java)
+                        .also { int ->
+                            int.putExtra("TOKEN", res.text)
+                            int.putExtra("ACTIVITY", activity)
+                        })
+                    finish()
                 }
 
                 errorCallback = ErrorCallback {
-                    Log.e("Main", "codeScanner: ${it.message}")
+                    Log.e("ERR", "codeScanner: ${it.message}")
                 }
 
                 qrscannerView.setOnClickListener {

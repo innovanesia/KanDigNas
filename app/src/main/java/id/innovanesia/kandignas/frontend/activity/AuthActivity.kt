@@ -72,25 +72,37 @@ class AuthActivity : AppCompatActivity()
                             )
                             {
                                 Log.e("Response", response.body().toString())
-                                if (response.body()!!.user.type == "koperasi"
-                                    || response.body()!!.user.type == "kantin"
-                                    || response.body()!!.user.type == "siswa"
-                                    || response.body()!!.user.type == "umum"
-                                )
-                                {
-                                    val commit: SharedPreferences.Editor = sharedPreference.edit()
-                                    commit.putString(keyToken, response.body()!!.access_token)
-                                    commit.putString(keyType, response.body()!!.user.type)
-                                    commit.apply()
-                                    startMainMenu(response.body()!!.user.type)
-                                }
-                                else
+                                if (response.body() == null)
                                 {
                                     Snackbar.make(
                                         binds.root,
-                                        "Pengguna tidak terdaftar sebagai akun publik.",
+                                        "Login gagal. Mohon coba lagi!",
                                         Snackbar.LENGTH_SHORT
                                     ).show()
+                                }
+                                else
+                                {
+                                    if (response.body()!!.user.type == "koperasi"
+                                        || response.body()!!.user.type == "kantin"
+                                        || response.body()!!.user.type == "siswa"
+                                        || response.body()!!.user.type == "umum"
+                                    )
+                                    {
+                                        val commit: SharedPreferences.Editor =
+                                            sharedPreference.edit()
+                                        commit.putString(keyToken, response.body()!!.access_token)
+                                        commit.putString(keyType, response.body()!!.user.type)
+                                        commit.apply()
+                                        startMainMenu(response.body()!!.user.type)
+                                    }
+                                    else
+                                    {
+                                        Snackbar.make(
+                                            binds.root,
+                                            "Pengguna tidak terdaftar sebagai akun publik.",
+                                            Snackbar.LENGTH_SHORT
+                                        ).show()
+                                    }
                                 }
                             }
 
@@ -137,6 +149,7 @@ class AuthActivity : AppCompatActivity()
                     "Berhasil masuk!",
                     Toast.LENGTH_SHORT
                 ).show()
+                finish()
             }
             "kantin" ->
             {
@@ -150,6 +163,7 @@ class AuthActivity : AppCompatActivity()
                     "Berhasil masuk!",
                     Toast.LENGTH_SHORT
                 ).show()
+                finish()
             }
             "siswa" ->
             {
@@ -163,6 +177,7 @@ class AuthActivity : AppCompatActivity()
                     "Berhasil masuk!",
                     Toast.LENGTH_SHORT
                 ).show()
+                finish()
             }
             "umum" ->
             {
@@ -176,6 +191,7 @@ class AuthActivity : AppCompatActivity()
                     "Berhasil masuk!",
                     Toast.LENGTH_SHORT
                 ).show()
+                finish()
             }
         }
     }
