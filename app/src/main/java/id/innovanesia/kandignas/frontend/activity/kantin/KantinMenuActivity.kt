@@ -47,13 +47,19 @@ class KantinMenuActivity : AppCompatActivity()
         binds.apply {
             setSupportActionBar(toolbar)
 
+            mainMenuKantinLoading.visibility = View.VISIBLE
+
             getDB(token)
+
+            swipeRefreshLayout.setOnRefreshListener {
+                getDB(token)
+            }
 
             calculatorButton.setOnClickListener {
                 startActivity(Intent(this@KantinMenuActivity, CalculatorActivity::class.java))
             }
 
-            cairsaldoButton.setOnClickListener {
+            showQrButton.setOnClickListener {
                 startActivity(Intent(this@KantinMenuActivity, ShowQRActivity::class.java)
                     .also {
                         it.putExtra("API", sharedPreference.getString(keyToken, null))
@@ -152,6 +158,8 @@ class KantinMenuActivity : AppCompatActivity()
                             finish()
                         }
                     })
+                mainMenuKantinLoading.visibility = View.GONE
+                swipeRefreshLayout.isRefreshing = false
             }
     }
 

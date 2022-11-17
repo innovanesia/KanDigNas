@@ -8,6 +8,7 @@ import android.graphics.Rect
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -382,39 +383,52 @@ class SelectNominalActivity : AppCompatActivity()
                                     }
                                     else if (user?.type == "koperasi" && target?.type == "kantin")
                                     {
-                                        InitAPI.api.withdrawTransaction(
-                                            "Bearer $userToken",
-                                            target!!.id,
-                                            nominalInput.text.toString().toInt()
-                                        ).enqueue(object : Callback<TransactionFlowResponse>
+                                        if (target?.balance == 0 || target?.balance!! < nominalInput.text.toString().toInt())
                                         {
-                                            override fun onResponse(
-                                                call: Call<TransactionFlowResponse>,
-                                                response: Response<TransactionFlowResponse>
+                                            transactionStatus(
+                                                target!!,
+                                                nominalInput.text.toString().toInt(),
+                                                "failed"
                                             )
+                                            dialog.dismiss()
+                                        }
+                                        else
+                                        {
+                                            InitAPI.api.withdrawTransaction(
+                                                "Bearer $userToken",
+                                                target!!.id,
+                                                nominalInput.text.toString().toInt()
+                                            ).enqueue(object : Callback<TransactionFlowResponse>
                                             {
-                                                transactionStatus(
-                                                    target!!,
-                                                    nominalInput.text.toString().toInt(),
-                                                    "success"
+                                                override fun onResponse(
+                                                    call: Call<TransactionFlowResponse>,
+                                                    response: Response<TransactionFlowResponse>
                                                 )
-                                                dialog.dismiss()
-                                            }
+                                                {
+                                                    Log.e("Withdraw Response", response.body().toString())
+                                                    transactionStatus(
+                                                        target!!,
+                                                        nominalInput.text.toString().toInt(),
+                                                        "success"
+                                                    )
+                                                    dialog.dismiss()
+                                                }
 
-                                            override fun onFailure(
-                                                call: Call<TransactionFlowResponse>,
-                                                t: Throwable
-                                            )
-                                            {
-                                                t.printStackTrace()
-                                                transactionStatus(
-                                                    target!!,
-                                                    nominalInput.text.toString().toInt(),
-                                                    "failed"
+                                                override fun onFailure(
+                                                    call: Call<TransactionFlowResponse>,
+                                                    t: Throwable
                                                 )
-                                                dialog.dismiss()
-                                            }
-                                        })
+                                                {
+                                                    t.printStackTrace()
+                                                    transactionStatus(
+                                                        target!!,
+                                                        nominalInput.text.toString().toInt(),
+                                                        "failed"
+                                                    )
+                                                    dialog.dismiss()
+                                                }
+                                            })
+                                        }
                                     }
                                 }
                             }

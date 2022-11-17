@@ -2,7 +2,7 @@
 <androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/swipeRefresh_layout"
+    android:id="@+id/swipe_refresh_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -230,7 +230,7 @@
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_gravity="center"
-                        app:srcCompat="@drawable/ic_baseline_qr_code_scanner_24"
+                        app:srcCompat="@drawable/qr_scan_icon"
                         tools:ignore="ContentDescription,ImageContrastCheck" />
 
                 </com.google.android.material.card.MaterialCardView>
@@ -246,7 +246,7 @@
                     android:textColor="@color/grey"
                     android:textSize="14sp"
                     android:textStyle="bold"
-                    app:layout_constraintEnd_toEndOf="@+id/scanqr_button"
+                    app:layout_constraintEnd_toEndOf="@+id/siswa_scanqr_button"
                     app:layout_constraintStart_toStartOf="@+id/siswa_scanqr_button"
                     app:layout_constraintTop_toBottomOf="@+id/siswa_scanqr_button"
                     tools:ignore="HardcodedText" />
