@@ -21,5 +21,7 @@ data class Transactions(
     @SerializedName("note")
     val description: String,
     @SerializedName("created_at")
-    val time: String
+    val time: String,
+    @SerializedName("status")
+    val status: String
 ): Parcelable

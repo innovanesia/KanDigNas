@@ -3,12 +3,14 @@ package id.innovanesia.kandignas.backend.api
 import id.innovanesia.kandignas.backend.response.AccountResponse
 import id.innovanesia.kandignas.backend.response.LoginRegisterResponse
 import id.innovanesia.kandignas.backend.response.TransactionFlowResponse
+import id.innovanesia.kandignas.backend.response.TransactionResponse
 import retrofit2.Call
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.Path
 
 interface GetAPI
 {
@@ -38,6 +40,11 @@ interface GetAPI
     fun getAccount(
         @Header("Authorization") token: String
     ) : Call<AccountResponse>
+
+    @GET("account/transactions")
+    fun getTransaction(
+        @Header("Authorization") token: String,
+    ) : Call<TransactionResponse>
 
     @FormUrlEncoded
     @POST("account/topup")

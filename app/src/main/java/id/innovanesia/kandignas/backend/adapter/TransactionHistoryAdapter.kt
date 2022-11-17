@@ -29,17 +29,18 @@ class TransactionHistoryAdapter(val context: Context, private val transaction: A
     {
         holder.bind.apply {
             val format: NumberFormat = DecimalFormat("#,###")
-            transactionName.text = transaction[position].name
-            if (transaction[position].cash_flow == "in")
+            transactionName.text = transaction[position].description
+            if (transaction[position].status == "in")
             {
                 transactionAmount.setTextColor(ContextCompat.getColor(context, R.color.green))
                 transactionAmount.text = "+Rp ${format.format(transaction[position].amount)}"
             }
-            else if (transaction[position].cash_flow == "out")
+            else if (transaction[position].status == "out")
             {
                 transactionAmount.setTextColor(ContextCompat.getColor(context, R.color.red))
                 transactionAmount.text = "-Rp ${format.format(transaction[position].amount)}"
             }
+            transactionDate.text = transaction[position].time
         }
     }
 

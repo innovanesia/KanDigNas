@@ -63,6 +63,7 @@ class AuthActivity : AppCompatActivity()
             loginButton.setOnClickListener {
                 if (usernameInput.text.toString().trim().isNotEmpty() && passwordInput.text.toString().trim().isNotEmpty())
                 {
+                    loadingBar.visibility = View.VISIBLE
                     InitAPI.api.login(usernameInput.text.toString(), passwordInput.text.toString())
                         .enqueue(object : Callback<LoginRegisterResponse>
                         {
@@ -79,6 +80,7 @@ class AuthActivity : AppCompatActivity()
                                         "Login gagal. Mohon coba lagi!",
                                         Snackbar.LENGTH_SHORT
                                     ).show()
+                                    loadingBar.visibility = View.GONE
                                 }
                                 else
                                 {
@@ -93,6 +95,7 @@ class AuthActivity : AppCompatActivity()
                                         commit.putString(keyToken, response.body()!!.access_token)
                                         commit.putString(keyType, response.body()!!.user.type)
                                         commit.apply()
+                                        loadingBar.visibility = View.GONE
                                         startMainMenu(response.body()!!.user.type)
                                     }
                                     else
@@ -102,6 +105,7 @@ class AuthActivity : AppCompatActivity()
                                             "Pengguna tidak terdaftar sebagai akun publik.",
                                             Snackbar.LENGTH_SHORT
                                         ).show()
+                                        loadingBar.visibility = View.GONE
                                     }
                                 }
                             }
@@ -114,6 +118,7 @@ class AuthActivity : AppCompatActivity()
                                     Snackbar.LENGTH_SHORT
                                 ).show()
                                 t.printStackTrace()
+                                loadingBar.visibility = View.GONE
                             }
                         })
                 }
@@ -124,6 +129,7 @@ class AuthActivity : AppCompatActivity()
                         "Mohon isi semua kolom yang kosong!",
                         Snackbar.LENGTH_SHORT
                     ).show()
+                    loadingBar.visibility = View.GONE
                 }
             }
 

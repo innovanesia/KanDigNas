@@ -1,7 +1,18 @@
 package id.innovanesia.kandignas.backend.models
 
+import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
+import java.time.temporal.TemporalAmount
+
+@Parcelize
 data class TransactionHistory(
-    val name: String,
+    @SerializedName("amount")
     val amount: Int,
-    val cash_flow: String
-)
+    @SerializedName("note")
+    val description: String,
+    @SerializedName("created_at")
+    val time: String,
+    @SerializedName("status")
+    val status: String,
+): Parcelable
