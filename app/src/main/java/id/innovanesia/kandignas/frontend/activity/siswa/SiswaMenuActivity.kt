@@ -1,5 +1,6 @@
 package id.innovanesia.kandignas.frontend.activity.siswa
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -67,7 +68,7 @@ class SiswaMenuActivity : AppCompatActivity()
             topupButton.setOnClickListener {
                 startActivity(Intent(this@SiswaMenuActivity, ShowQRActivity::class.java))
             }
-            scanqrButton.setOnClickListener {
+            siswaScanqrButton.setOnClickListener {
                 startActivity(Intent(this@SiswaMenuActivity, ScanQRActivity::class.java)
                     .also {
                         it.putExtra("ACTIVITY", type)
@@ -150,12 +151,13 @@ class SiswaMenuActivity : AppCompatActivity()
             InitAPI.api.getAccount("Bearer $token")
                 .enqueue(object : Callback<AccountResponse>
                 {
+                    @SuppressLint("SetTextI18n")
                     override fun onResponse(
                         call: Call<AccountResponse>,
                         response: Response<AccountResponse>
                     )
                     {
-                        greetingsText.text = response.body()!!.user.fullname
+                        greetingsText.text = "Hai, ${response.body()!!.user.fullname}!"
                         val format: NumberFormat = DecimalFormat("#,###")
                         balanceAmount.text = format.format(response.body()!!.user.balance)
                     }

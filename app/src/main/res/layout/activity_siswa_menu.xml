@@ -2,7 +2,7 @@
 <androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/swipeRefresh_layout"
+    android:id="@+id/swipe_refresh_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -126,7 +126,7 @@
                         android:layout_height="match_parent">
 
                         <ImageView
-                            android:id="@+id/topup_icon"
+                            android:id="@+id/qr_icon"
                             android:layout_width="30dp"
                             android:layout_height="30dp"
                             android:layout_marginStart="8dp"
@@ -137,16 +137,16 @@
                             tools:ignore="ContentDescription,ImageContrastCheck" />
 
                         <TextView
-                            android:id="@+id/topup_text"
+                            android:id="@+id/scanqr_text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Topup"
                             android:textColor="@color/black"
                             android:textStyle="bold"
-                            app:layout_constraintBottom_toBottomOf="@+id/topup_icon"
+                            app:layout_constraintBottom_toBottomOf="@+id/qr_icon"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toEndOf="@+id/topup_icon"
-                            app:layout_constraintTop_toTopOf="@+id/topup_icon"
+                            app:layout_constraintStart_toEndOf="@+id/qr_icon"
+                            app:layout_constraintTop_toTopOf="@+id/qr_icon"
                             tools:ignore="HardcodedText" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -154,21 +154,6 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
-
-        <com.denzcoskun.imageslider.ImageSlider
-            android:id="@+id/news_carousel"
-            android:layout_width="0dp"
-            android:layout_height="100dp"
-            android:layout_marginTop="16dp"
-            app:iss_auto_cycle="true"
-            app:iss_corner_radius="20"
-            app:iss_delay="0"
-            app:iss_error_image="@drawable/error"
-            app:iss_period="3000"
-            app:iss_placeholder="@color/black"
-            app:layout_constraintEnd_toEndOf="@+id/balance_card"
-            app:layout_constraintStart_toStartOf="@+id/balance_card"
-            app:layout_constraintTop_toBottomOf="@+id/balance_card" />
 
         <ProgressBar
             android:id="@+id/main_menu_siswa_loading"
@@ -181,19 +166,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/menu_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Menu"
-            android:textColor="@color/grey"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/news_carousel"
-            app:layout_constraintTop_toBottomOf="@+id/news_carousel"
-            tools:ignore="HardcodedText" />
-
         <ScrollView
             android:id="@+id/menu_scroll"
             android:layout_width="0dp"
@@ -205,7 +177,7 @@
             app:layout_constraintBottom_toTopOf="@+id/build_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/menu_text"
+            app:layout_constraintTop_toBottomOf="@+id/balance_card"
             tools:ignore="SpeakableTextPresentCheck">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -213,8 +185,36 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
+                <com.denzcoskun.imageslider.ImageSlider
+                    android:id="@+id/news_carousel"
+                    android:layout_width="0dp"
+                    android:layout_height="200dp"
+                    app:iss_auto_cycle="true"
+                    app:iss_corner_radius="20"
+                    app:iss_delay="0"
+                    app:iss_error_image="@drawable/error"
+                    app:iss_period="3000"
+                    app:iss_placeholder="@color/black"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/menu_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Menu"
+                    android:textColor="@color/grey"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/news_carousel"
+                    tools:ignore="HardcodedText" />
+
                 <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/scanqr_button"
+                    android:id="@+id/siswa_scanqr_button"
                     android:layout_width="75dp"
                     android:layout_height="75dp"
                     app:cardBackgroundColor="@color/white"
@@ -226,17 +226,17 @@
                     app:layout_constraintTop_toTopOf="@+id/tabungan_button">
 
                     <ImageView
-                        android:id="@+id/qrcode_icon"
+                        android:id="@+id/siswa_qrcode_icon"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_gravity="center"
-                        app:srcCompat="@drawable/ic_baseline_qr_code_scanner_24"
+                        app:srcCompat="@drawable/qr_scan_icon"
                         tools:ignore="ContentDescription,ImageContrastCheck" />
 
                 </com.google.android.material.card.MaterialCardView>
 
                 <TextView
-                    android:id="@+id/scanqr_text"
+                    android:id="@+id/siswa_scanqr_text"
                     android:layout_width="75dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|center"
@@ -246,9 +246,9 @@
                     android:textColor="@color/grey"
                     android:textSize="14sp"
                     android:textStyle="bold"
-                    app:layout_constraintEnd_toEndOf="@+id/scanqr_button"
-                    app:layout_constraintStart_toStartOf="@+id/scanqr_button"
-                    app:layout_constraintTop_toBottomOf="@+id/scanqr_button"
+                    app:layout_constraintEnd_toEndOf="@+id/siswa_scanqr_button"
+                    app:layout_constraintStart_toStartOf="@+id/siswa_scanqr_button"
+                    app:layout_constraintTop_toBottomOf="@+id/siswa_scanqr_button"
                     tools:ignore="HardcodedText" />
 
                 <com.google.android.material.card.MaterialCardView
@@ -261,7 +261,7 @@
                     app:cardElevation="8dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintTop_toBottomOf="@+id/menu_text">
 
                     <ImageView
                         android:id="@+id/tabungan_icon"
