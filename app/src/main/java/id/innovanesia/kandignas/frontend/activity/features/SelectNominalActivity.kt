@@ -760,7 +760,7 @@ class SelectNominalActivity : AppCompatActivity()
             startActivity(
                 Intent(
                     this@SelectNominalActivity,
-                    TransactionSuccessActivity::class.java
+                    TransactionStatusActivity::class.java
                 ).also {
                     it.putExtra("STATUS", status)
                     it.putExtra("TARGET", target)

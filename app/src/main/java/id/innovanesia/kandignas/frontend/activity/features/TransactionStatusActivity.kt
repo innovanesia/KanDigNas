@@ -9,13 +9,13 @@ import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import id.innovanesia.kandignas.R
 import id.innovanesia.kandignas.backend.models.Users
-import id.innovanesia.kandignas.databinding.ActivityTransactionSuccessBinding
+import id.innovanesia.kandignas.databinding.ActivityTransactionStatusBinding
 import java.text.DecimalFormat
 import java.text.NumberFormat
 
-class TransactionSuccessActivity : AppCompatActivity()
+class TransactionStatusActivity : AppCompatActivity()
 {
-    private lateinit var binds: ActivityTransactionSuccessBinding
+    private lateinit var binds: ActivityTransactionStatusBinding
 
     companion object
     {
@@ -28,7 +28,7 @@ class TransactionSuccessActivity : AppCompatActivity()
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
-        binds = ActivityTransactionSuccessBinding.inflate(layoutInflater)
+        binds = ActivityTransactionStatusBinding.inflate(layoutInflater)
         setContentView(binds.root)
 
         val status = intent.getStringExtra(STATUS)!!
@@ -44,7 +44,7 @@ class TransactionSuccessActivity : AppCompatActivity()
             amountContent.text = "Rp " + format.format(amount)
             if (status == "success")
             {
-                Glide.with(this@TransactionSuccessActivity)
+                Glide.with(this@TransactionStatusActivity)
                     .load(R.drawable.success_alert)
                     .into(successIllustration)
                 transactionStatus.text = "Transaksi Sukses!"
@@ -61,7 +61,7 @@ class TransactionSuccessActivity : AppCompatActivity()
             }
             else if (status == "failed")
             {
-                Glide.with(this@TransactionSuccessActivity)
+                Glide.with(this@TransactionStatusActivity)
                     .load(R.drawable.failed_alert)
                     .into(successIllustration)
                 transactionStatus.text = "Transaksi Gagal!"
@@ -85,7 +85,7 @@ class TransactionSuccessActivity : AppCompatActivity()
             seeTransactionHistoryButton.setOnClickListener {
                 startActivity(
                     Intent(
-                        this@TransactionSuccessActivity,
+                        this@TransactionStatusActivity,
                         TransactionHistoryActivity::class.java
                     )
                 )
