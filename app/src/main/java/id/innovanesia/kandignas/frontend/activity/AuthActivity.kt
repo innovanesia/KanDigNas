@@ -11,6 +11,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import id.innovanesia.kandignas.backend.api.InitAPI
@@ -137,6 +138,14 @@ class AuthActivity : AppCompatActivity()
                 startActivity(Intent(this@AuthActivity, RegisterActivity::class.java))
             }
         }
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true)
+        {
+            override fun handleOnBackPressed()
+            {
+                finish()
+            }
+        })
     }
 
     private fun startMainMenu(type: String)

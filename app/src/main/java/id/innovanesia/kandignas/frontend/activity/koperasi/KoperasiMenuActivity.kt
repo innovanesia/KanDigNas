@@ -16,7 +16,9 @@ import id.innovanesia.kandignas.backend.api.InitAPI
 import id.innovanesia.kandignas.backend.response.AccountResponse
 import id.innovanesia.kandignas.databinding.ActivityKoperasiMenuBinding
 import id.innovanesia.kandignas.frontend.activity.AuthActivity
+import id.innovanesia.kandignas.frontend.activity.UnderDevelopmentActivity
 import id.innovanesia.kandignas.frontend.activity.features.ScanQRActivity
+import id.innovanesia.kandignas.frontend.activity.features.TransactionHistoryActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -60,6 +62,20 @@ class KoperasiMenuActivity : AppCompatActivity()
                         it.putExtra("ACTIVITY", type)
                     })
             }
+            transactionHistoryButton.setOnClickListener {
+                startActivity(
+                    Intent(
+                        this@KoperasiMenuActivity, TransactionHistoryActivity::class.java
+                    )
+                )
+            }
+            editprofileButton.setOnClickListener {
+                startActivity(
+                    Intent(
+                        this@KoperasiMenuActivity, UnderDevelopmentActivity::class.java
+                    )
+                )
+            }
         }
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true)
@@ -87,7 +103,7 @@ class KoperasiMenuActivity : AppCompatActivity()
                 delete.clear().apply()
                 Toast.makeText(
                     this@KoperasiMenuActivity,
-                    "Signed out sucessfully!",
+                    "Berhasil keluar!",
                     Toast.LENGTH_SHORT
                 ).show()
                 startActivity(Intent(this@KoperasiMenuActivity, AuthActivity::class.java))

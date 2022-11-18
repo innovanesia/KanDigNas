@@ -138,6 +138,26 @@
                     tools:ignore="TextContrastCheck" />
             </com.google.android.material.textfield.TextInputLayout>
 
+            <LinearLayout
+                android:id="@+id/school_spinner_layout"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/spinner_background_radius"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/niknip_layout">
+
+                <Spinner
+                    android:id="@+id/school_spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:popupBackground="@color/white"
+                    tools:ignore="SpeakableTextPresentCheck" />
+
+            </LinearLayout>
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/nisn_layout"
                 android:layout_width="match_parent"
@@ -154,7 +174,7 @@
                 app:boxStrokeWidth="0dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/niknip_layout"
+                app:layout_constraintTop_toBottomOf="@+id/school_spinner_layout"
                 tools:ignore="HardcodedText">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -189,7 +209,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="number"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/black"
+                    tools:ignore="TextContrastCheck" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout

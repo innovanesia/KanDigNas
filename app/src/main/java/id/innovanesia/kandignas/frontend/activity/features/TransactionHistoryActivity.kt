@@ -3,16 +3,14 @@ package id.innovanesia.kandignas.frontend.activity.features
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import id.innovanesia.kandignas.backend.adapter.TransactionHistoryAdapter
 import id.innovanesia.kandignas.backend.api.InitAPI
 import id.innovanesia.kandignas.backend.models.TransactionHistory
-import id.innovanesia.kandignas.backend.models.Transactions
 import id.innovanesia.kandignas.backend.response.TransactionResponse
 import id.innovanesia.kandignas.databinding.ActivityTransactionHistoryBinding
 import retrofit2.Call
@@ -49,6 +47,14 @@ class TransactionHistoryActivity : AppCompatActivity()
                 initRV(token)
             }
         }
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true)
+        {
+            override fun handleOnBackPressed()
+            {
+                finish()
+            }
+        })
     }
 
     private fun initRV(token: String)
@@ -61,7 +67,6 @@ class TransactionHistoryActivity : AppCompatActivity()
                         response: Response<TransactionResponse>
                     )
                     {
-                        Log.e("History Response", response.body().toString())
                         val result = response.body()?.transactions
                         val data: ArrayList<TransactionHistory> = ArrayList()
                         for (i in 0 until result?.size!!)
@@ -81,6 +86,18 @@ class TransactionHistoryActivity : AppCompatActivity()
                         layout.reverseLayout = true
                         layout.stackFromEnd = true
                         transactionRv.layoutManager = layout
+                        if (adapter.itemCount == 0)
+                        {
+                            noTransactionIllustration.visibility = View.VISIBLE
+                            noTransactionText.visibility = View.VISIBLE
+                        }
+                        else
+                        {
+                            noTransactionIllustration.visibility = View.GONE
+                            noTransactionText.visibility = View.GONE
+                        }
+                        transactionHistoryLoading.visibility = View.GONE
+                        swipeTransactionHistory.isRefreshing = false
                     }
 
                     override fun onFailure(call: Call<TransactionResponse>, t: Throwable)
@@ -91,10 +108,10 @@ class TransactionHistoryActivity : AppCompatActivity()
                             Toast.LENGTH_SHORT
                         ).show()
                         finish()
+                        transactionHistoryLoading.visibility = View.GONE
+                        swipeTransactionHistory.isRefreshing = false
                     }
                 })
-            swipeTransactionHistory.isRefreshing = false
-            transactionHistoryLoading.visibility = View.GONE
         }
     }
 }

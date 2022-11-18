@@ -16,8 +16,10 @@ import id.innovanesia.kandignas.backend.api.InitAPI
 import id.innovanesia.kandignas.backend.response.AccountResponse
 import id.innovanesia.kandignas.databinding.ActivityKantinMenuBinding
 import id.innovanesia.kandignas.frontend.activity.AuthActivity
+import id.innovanesia.kandignas.frontend.activity.UnderDevelopmentActivity
 import id.innovanesia.kandignas.frontend.activity.features.CalculatorActivity
 import id.innovanesia.kandignas.frontend.activity.features.ShowQRActivity
+import id.innovanesia.kandignas.frontend.activity.features.TransactionHistoryActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -29,11 +31,6 @@ class KantinMenuActivity : AppCompatActivity()
     private lateinit var binds: ActivityKantinMenuBinding
     private lateinit var sharedPreference: SharedPreferences
     private val keyToken = "key.token"
-
-    companion object
-    {
-        private const val type = "kantin"
-    }
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -56,14 +53,35 @@ class KantinMenuActivity : AppCompatActivity()
             }
 
             calculatorButton.setOnClickListener {
-                startActivity(Intent(this@KantinMenuActivity, CalculatorActivity::class.java))
+                startActivity(
+                    Intent(
+                        this@KantinMenuActivity, CalculatorActivity::class.java
+                    )
+                )
             }
 
             showQrButton.setOnClickListener {
-                startActivity(Intent(this@KantinMenuActivity, ShowQRActivity::class.java)
-                    .also {
-                        it.putExtra("API", sharedPreference.getString(keyToken, null))
-                    })
+                startActivity(
+                    Intent(
+                        this@KantinMenuActivity, ShowQRActivity::class.java
+                    )
+                )
+            }
+
+            transactionHistoryButton.setOnClickListener {
+                startActivity(
+                    Intent(
+                        this@KantinMenuActivity, TransactionHistoryActivity::class.java
+                    )
+                )
+            }
+
+            editprofileButton.setOnClickListener {
+                startActivity(
+                    Intent(
+                        this@KantinMenuActivity, UnderDevelopmentActivity::class.java
+                    )
+                )
             }
 
             setNews()
@@ -94,7 +112,7 @@ class KantinMenuActivity : AppCompatActivity()
                 delete.clear().apply()
                 Toast.makeText(
                     this@KantinMenuActivity,
-                    "Signed out sucessfully!",
+                    "Berhasil keluar!",
                     Toast.LENGTH_SHORT
                 ).show()
                 startActivity(Intent(this@KantinMenuActivity, AuthActivity::class.java))

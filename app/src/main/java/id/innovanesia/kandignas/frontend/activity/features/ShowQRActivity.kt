@@ -1,7 +1,6 @@
 package id.innovanesia.kandignas.frontend.activity.features
 
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.Point
@@ -16,7 +15,6 @@ import androidx.appcompat.app.AppCompatActivity
 import id.innovanesia.kandignas.backend.api.InitAPI
 import id.innovanesia.kandignas.backend.response.AccountResponse
 import id.innovanesia.kandignas.databinding.ActivityShowQrBinding
-import id.innovanesia.kandignas.frontend.activity.AuthActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

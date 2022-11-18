@@ -279,13 +279,11 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|center"
                     android:layout_marginTop="8dp"
-                    android:layout_marginBottom="16dp"
                     android:text="Tabungan"
                     android:textAlignment="center"
                     android:textColor="@color/grey"
                     android:textSize="14sp"
                     android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="@+id/tabungan_button"
                     app:layout_constraintStart_toStartOf="@+id/tabungan_button"
                     app:layout_constraintTop_toBottomOf="@+id/tabungan_button"
@@ -326,6 +324,42 @@
                     app:layout_constraintEnd_toEndOf="@+id/transaction_history_button"
                     app:layout_constraintStart_toStartOf="@+id/transaction_history_button"
                     app:layout_constraintTop_toBottomOf="@+id/transaction_history_button"
+                    tools:ignore="HardcodedText" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/edit_profile_button"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:layout_marginTop="16dp"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="8dp"
+                    app:layout_constraintEnd_toEndOf="@+id/siswa_scanqr_button"
+                    app:layout_constraintStart_toStartOf="@+id/siswa_scanqr_button"
+                    app:layout_constraintTop_toBottomOf="@+id/siswa_scanqr_text" >
+
+                    <ImageView
+                        android:id="@+id/edit_profile_icon"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center"
+                        app:srcCompat="@drawable/contact_icon"
+                        tools:ignore="ContentDescription" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Sunting Profil"
+                    android:textAlignment="center"
+                    android:textColor="@color/grey"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="@+id/edit_profile_button"
+                    app:layout_constraintStart_toStartOf="@+id/edit_profile_button"
+                    app:layout_constraintTop_toBottomOf="@+id/edit_profile_button"
                     tools:ignore="HardcodedText" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>

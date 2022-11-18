@@ -1,16 +1,8 @@
 package id.innovanesia.kandignas.backend.api
 
-import id.innovanesia.kandignas.backend.response.AccountResponse
-import id.innovanesia.kandignas.backend.response.LoginRegisterResponse
-import id.innovanesia.kandignas.backend.response.TransactionFlowResponse
-import id.innovanesia.kandignas.backend.response.TransactionResponse
+import id.innovanesia.kandignas.backend.response.*
 import retrofit2.Call
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
-import retrofit2.http.GET
-import retrofit2.http.Header
-import retrofit2.http.POST
-import retrofit2.http.Path
+import retrofit2.http.*
 
 interface GetAPI
 {
@@ -35,6 +27,9 @@ interface GetAPI
         @Field("nisn") nisn: String,
         @Field("nik") nik: String,
     ): Call<LoginRegisterResponse>
+
+    @GET("schools")
+    fun getSchoolList() : Call<SchoolResponse>
 
     @GET("account")
     fun getAccount(

@@ -3,7 +3,6 @@ package id.innovanesia.kandignas.backend.models
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
-import java.time.temporal.TemporalAmount
 
 @Parcelize
 data class TransactionHistory(

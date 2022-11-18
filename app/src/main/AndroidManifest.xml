@@ -23,6 +23,11 @@
         android:theme="@style/Theme.KanDigNas"
         tools:targetApi="31">
         <activity
+            android:name=".frontend.activity.UnderDevelopmentActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
             android:name=".frontend.activity.features.TransactionHistoryActivity"
             android:exported="false"
             android:screenOrientation="portrait"
@@ -62,20 +67,20 @@
         <activity
             android:name=".frontend.activity.siswa.SiswaMenuActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
             android:parentActivityName=".frontend.activity.AuthActivity"
+            android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".frontend.activity.koperasi.KoperasiMenuActivity"
             android:exported="true"
-            android:screenOrientation="portrait"
             android:parentActivityName=".frontend.activity.AuthActivity"
+            android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".frontend.activity.SplashActivity"
             android:exported="true"
-            android:screenOrientation="portrait"
             android:parentActivityName=".frontend.activity.AuthActivity"
+            android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

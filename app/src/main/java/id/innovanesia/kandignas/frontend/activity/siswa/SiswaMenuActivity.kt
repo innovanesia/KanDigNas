@@ -17,6 +17,7 @@ import id.innovanesia.kandignas.backend.api.InitAPI
 import id.innovanesia.kandignas.backend.response.AccountResponse
 import id.innovanesia.kandignas.databinding.ActivitySiswaMenuBinding
 import id.innovanesia.kandignas.frontend.activity.AuthActivity
+import id.innovanesia.kandignas.frontend.activity.UnderDevelopmentActivity
 import id.innovanesia.kandignas.frontend.activity.features.ScanQRActivity
 import id.innovanesia.kandignas.frontend.activity.features.ShowQRActivity
 import id.innovanesia.kandignas.frontend.activity.features.TransactionHistoryActivity
@@ -66,7 +67,18 @@ class SiswaMenuActivity : AppCompatActivity()
             setNews()
 
             topupButton.setOnClickListener {
-                startActivity(Intent(this@SiswaMenuActivity, ShowQRActivity::class.java))
+                startActivity(
+                    Intent(
+                        this@SiswaMenuActivity, ShowQRActivity::class.java
+                    )
+                )
+            }
+            tabunganButton.setOnClickListener {
+                startActivity(
+                    Intent(
+                        this@SiswaMenuActivity, UnderDevelopmentActivity::class.java
+                    )
+                )
             }
             siswaScanqrButton.setOnClickListener {
                 startActivity(Intent(this@SiswaMenuActivity, ScanQRActivity::class.java)
@@ -78,9 +90,14 @@ class SiswaMenuActivity : AppCompatActivity()
                 startActivity(
                     Intent(
                         this@SiswaMenuActivity, TransactionHistoryActivity::class.java
-                    ).also {
-                        it.putExtra("ACTIVITY", type)
-                    }
+                    )
+                )
+            }
+            editProfileButton.setOnClickListener {
+                startActivity(
+                    Intent(
+                        this@SiswaMenuActivity, UnderDevelopmentActivity::class.java
+                    )
                 )
             }
         }

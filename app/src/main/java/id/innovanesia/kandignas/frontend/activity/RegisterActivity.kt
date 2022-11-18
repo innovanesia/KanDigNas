@@ -6,13 +6,13 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
-import android.widget.RadioButton
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
+import id.innovanesia.kandignas.R
 import id.innovanesia.kandignas.backend.api.InitAPI
 import id.innovanesia.kandignas.backend.response.LoginRegisterResponse
+import id.innovanesia.kandignas.backend.response.SchoolResponse
 import id.innovanesia.kandignas.databinding.RegisterAccountFormBinding
 import retrofit2.Call
 import retrofit2.Callback
@@ -28,20 +28,11 @@ class RegisterActivity : AppCompatActivity()
         binds = RegisterAccountFormBinding.inflate(layoutInflater)
         setContentView(binds.root)
 
-        viewForm()
-    }
-
-    private fun viewForm()
-    {
         binds.apply {
-            setSupportActionBar(toolbar)
-
-            toolbar.setNavigationOnClickListener {
-                finish()
-            }
-            var type: String? = null
+            var type: String?
 
             niknipLayout.visibility = View.GONE
+            schoolSpinnerLayout.visibility = View.GONE
             nisnLayout.visibility = View.GONE
             nisLayout.visibility = View.GONE
             namaLayout.visibility = View.GONE
@@ -57,6 +48,7 @@ class RegisterActivity : AppCompatActivity()
 
                 type = button.text.toString()
                 niknipLayout.visibility = View.VISIBLE
+                schoolSpinnerLayout.visibility = View.VISIBLE
                 nisLayout.visibility = View.GONE
                 nisnLayout.visibility = View.GONE
                 namaLayout.visibility = View.VISIBLE
@@ -65,6 +57,7 @@ class RegisterActivity : AppCompatActivity()
                 usernameLayout.visibility = View.VISIBLE
                 passwordLayout.visibility = View.VISIBLE
                 confirmpassLayout.visibility = View.VISIBLE
+                viewForm(type!!)
             }
 
             umumType.setOnClickListener {
@@ -73,6 +66,7 @@ class RegisterActivity : AppCompatActivity()
 
                 type = button.text.toString()
                 niknipLayout.visibility = View.VISIBLE
+                schoolSpinnerLayout.visibility = View.VISIBLE
                 nisLayout.visibility = View.GONE
                 nisnLayout.visibility = View.GONE
                 namaLayout.visibility = View.VISIBLE
@@ -81,6 +75,7 @@ class RegisterActivity : AppCompatActivity()
                 usernameLayout.visibility = View.VISIBLE
                 passwordLayout.visibility = View.VISIBLE
                 confirmpassLayout.visibility = View.VISIBLE
+                viewForm(type!!)
             }
 
             siswaType.setOnClickListener {
@@ -89,6 +84,7 @@ class RegisterActivity : AppCompatActivity()
 
                 type = button.text.toString()
                 niknipLayout.visibility = View.VISIBLE
+                schoolSpinnerLayout.visibility = View.VISIBLE
                 nisLayout.visibility = View.VISIBLE
                 nisnLayout.visibility = View.VISIBLE
                 namaLayout.visibility = View.VISIBLE
@@ -97,70 +93,126 @@ class RegisterActivity : AppCompatActivity()
                 usernameLayout.visibility = View.VISIBLE
                 passwordLayout.visibility = View.VISIBLE
                 confirmpassLayout.visibility = View.VISIBLE
+                viewForm(type!!)
+            }
+        }
+    }
+
+    private fun viewForm(type: String)
+    {
+        var schoolId = 0
+        binds.apply {
+            setSupportActionBar(toolbar)
+
+            toolbar.setNavigationOnClickListener {
+                finish()
             }
 
-            submitButton.setOnClickListener {
-                if (type == null)
+            InitAPI.api.getSchoolList()
+                .enqueue(object : Callback<SchoolResponse>
                 {
-                    Snackbar.make(
-                        binds.root,
-                        "Mohon isi semua data!",
-                        Snackbar.LENGTH_SHORT
-                    ).show()
-                }
-                else
-                {
-                    if (type!!.lowercase() == "umum" || type!!.lowercase() == "kantin")
+                    override fun onResponse(
+                        call: Call<SchoolResponse>,
+                        response: Response<SchoolResponse>
+                    )
                     {
-                        if (niknipInput.text!!.isEmpty() || namaInput.text!!.isEmpty()
-                            || kontakInput.text!!.isEmpty() || emailInput.text!!.isEmpty()
-                            || usernameInput.text!!.isEmpty() || passwordInput.text!!.isEmpty()
-                            || confirmpassInput.text!!.isEmpty()
-                        )
+                        val result = response.body()?.schools
+                        val data: ArrayList<String> = ArrayList()
+                        data.add("Pilih Sekolah")
+                        for (i in 0 until result?.size!!)
                         {
-                            Snackbar.make(
-                                binds.root,
-                                "Mohon isi semua data!",
-                                Snackbar.LENGTH_SHORT
+                            data.add(
+                                result[i].name
                             )
-                                .show()
-                        }
-                        else if (passwordInput.text.toString() != confirmpassInput.text.toString())
-                            Snackbar.make(
-                                binds.root,
-                                "Kata sandi tidak sama!",
-                                Snackbar.LENGTH_SHORT
-                            ).show()
-                        else
-                        {
-                            dataInsert(type!!)
+                            val adapter = ArrayAdapter(
+                                this@RegisterActivity,
+                                R.layout.school_spinner_item,
+                                R.id.spinner_item_text,
+                                data
+                            )
+                            schoolSpinner.adapter = adapter
+                            schoolSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener
+                            {
+                                override fun onItemSelected(
+                                    parent: AdapterView<*>?,
+                                    view: View?,
+                                    position: Int,
+                                    id: Long
+                                )
+                                {
+                                    schoolId = position
+                                    Log.e("Selected School ID", schoolId.toString())
+                                }
+
+                                override fun onNothingSelected(parent: AdapterView<*>?)
+                                {}
+                            }
                         }
                     }
-                    else if (type!!.lowercase() == "siswa")
+
+                    override fun onFailure(call: Call<SchoolResponse>, t: Throwable)
                     {
-                        if (nisnInput.text!!.isEmpty() || nisInput.text!!.isEmpty() || namaInput.text!!.isEmpty()
-                            || kontakInput.text!!.isEmpty() || emailInput.text!!.isEmpty()
-                            || usernameInput.text!!.isEmpty() || passwordInput.text!!.isEmpty()
-                            || confirmpassInput.text!!.isEmpty()
+                        Snackbar.make(
+                            binds.root,
+                            "Daftar sekolah tidak dapat diambil.\nMohon periksa koneksi!",
+                            Snackbar.LENGTH_SHORT
+                        ).show()
+                    }
+                })
+
+            Log.e("Selected School ID", schoolId.toString())
+
+            submitButton.setOnClickListener {
+                if (type.lowercase() == "umum" || type.lowercase() == "kantin")
+                {
+                    if (niknipInput.text!!.isEmpty() || namaInput.text!!.isEmpty()
+                        || kontakInput.text!!.isEmpty() || emailInput.text!!.isEmpty()
+                        || usernameInput.text!!.isEmpty() || passwordInput.text!!.isEmpty()
+                        || confirmpassInput.text!!.isEmpty() || schoolId == 0
+                    )
+                    {
+                        Snackbar.make(
+                            binds.root,
+                            "Mohon isi semua data!",
+                            Snackbar.LENGTH_SHORT
                         )
-                        {
-                            Snackbar.make(
-                                binds.root,
-                                "Mohon isi semua data!",
-                                Snackbar.LENGTH_SHORT
-                            )
-                                .show()
-                        }
-                        else if (passwordInput.text.toString() != confirmpassInput.text.toString())
-                            Snackbar.make(
-                                binds.root,
-                                "Kata sandi tidak sama!",
-                                Snackbar.LENGTH_SHORT
-                            ).show()
-                        else
-                        {
-                            dataInsert(type!!)
-                        }
+                            .show()
+                    }
+                    else if (passwordInput.text.toString() != confirmpassInput.text.toString())
+                        Snackbar.make(
+                            binds.root,
+                            "Kata sandi tidak sama!",
+                            Snackbar.LENGTH_SHORT
+                        ).show()
+                    else
+                    {
+                        dataInsert(type, schoolId)
+                    }
+                }
+                else if (type.lowercase() == "siswa")
+                {
+                    if (nisnInput.text!!.isEmpty() || nisInput.text!!.isEmpty() || namaInput.text!!.isEmpty()
+                        || kontakInput.text!!.isEmpty() || emailInput.text!!.isEmpty()
+                        || usernameInput.text!!.isEmpty() || passwordInput.text!!.isEmpty()
+                        || confirmpassInput.text!!.isEmpty() || schoolId == 0
+                    )
+                    {
+                        Snackbar.make(
+                            binds.root,
+                            "Mohon isi semua data!",
+                            Snackbar.LENGTH_SHORT
+                        )
+                            .show()
+                    }
+                    else if (passwordInput.text.toString() != confirmpassInput.text.toString())
+                        Snackbar.make(
+                            binds.root,
+                            "Kata sandi tidak sama!",
+                            Snackbar.LENGTH_SHORT
+                        ).show()
+                    else
+                    {
+                        dataInsert(type, schoolId)
                     }
                 }
             }
@@ -171,13 +223,13 @@ class RegisterActivity : AppCompatActivity()
         }
     }
 
-    private fun dataInsert(type: String)
+    private fun dataInsert(type: String, schoolId: Int)
     {
         binds.apply {
             InitAPI.api.register(
                 type.lowercase(),
                 namaInput.text.toString(),
-                1,
+                schoolId,
                 emailInput.text.toString(),
                 usernameInput.text.toString(),
                 passwordInput.text.toString(),
