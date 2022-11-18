@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_white"
-    tools:context=".frontend.activity.features.TransactionSuccessActivity">
+    tools:context=".frontend.activity.features.TransactionStatusActivity">
 
     <ImageView
         android:id="@+id/success_illustration"
