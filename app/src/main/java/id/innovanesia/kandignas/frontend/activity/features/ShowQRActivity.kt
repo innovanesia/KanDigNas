@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Point
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
@@ -51,6 +52,7 @@ class ShowQRActivity : AppCompatActivity()
         super.onCreate(savedInstanceState)
         binds = ActivityShowQrBinding.inflate(layoutInflater)
         setContentView(binds.root)
+
         val writePermission = ContextCompat.checkSelfPermission(
             this,
             android.Manifest.permission.WRITE_EXTERNAL_STORAGE
@@ -60,19 +62,36 @@ class ShowQRActivity : AppCompatActivity()
             android.Manifest.permission.READ_EXTERNAL_STORAGE
         )
 
-        if (writePermission != PackageManager.PERMISSION_GRANTED
-            && readPermission != PackageManager.PERMISSION_GRANTED
-        )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
         {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(
-                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    android.Manifest.permission.READ_EXTERNAL_STORAGE
-                ),
-                FILE_REQ
+            val mediaLocationPermission = ContextCompat.checkSelfPermission(
+                this, android.Manifest.permission.ACCESS_MEDIA_LOCATION
             )
+            if (mediaLocationPermission != PackageManager.PERMISSION_GRANTED)
+            {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(android.Manifest.permission.ACCESS_MEDIA_LOCATION),
+                    FILE_REQ
+                )
+            }
         }
+        else if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P)
+        {
+            if (readPermission != PackageManager.PERMISSION_GRANTED &&
+                writePermission != PackageManager.PERMISSION_GRANTED)
+            {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(
+                        android.Manifest.permission.READ_EXTERNAL_STORAGE,
+                        android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    ),
+                    FILE_REQ
+                )
+            }
+        }
+
 
         sharedPreference = getSharedPreferences("KanDigNas", Context.MODE_PRIVATE)
 
@@ -121,15 +140,30 @@ class ShowQRActivity : AppCompatActivity()
         {
             FILE_REQ ->
             {
-                if (grantResults.isEmpty() ||
-                    (grantResults[0] != PackageManager.PERMISSION_GRANTED
-                            && grantResults[1] != PackageManager.PERMISSION_GRANTED))
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
                 {
-                    Snackbar.make(
-                        binds.root,
-                        "Kamu perlu perizinan kamera untuk menggunakan aplikasi ini!",
-                        Snackbar.LENGTH_SHORT
-                    ).show()
+                    if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED)
+                    {
+                        Snackbar.make(
+                            binds.root,
+                            "Kamu perlu perizinan lokasi media untuk menggunakan aplikasi ini!",
+                            Snackbar.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+                else if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P)
+                {
+                    if (grantResults.isEmpty() ||
+                        (grantResults[0] != PackageManager.PERMISSION_GRANTED
+                                && grantResults[1] != PackageManager.PERMISSION_GRANTED)
+                    )
+                    {
+                        Snackbar.make(
+                            binds.root,
+                            "Kamu perlu perizinan penyimpanan untuk menggunakan aplikasi ini!",
+                            Snackbar.LENGTH_SHORT
+                        ).show()
+                    }
                 }
             }
         }
