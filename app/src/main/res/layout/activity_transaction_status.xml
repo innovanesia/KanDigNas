@@ -50,7 +50,7 @@
         <LinearLayout
             android:id="@+id/name_field"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="52dp"
             android:layout_marginBottom="8dp"
             android:orientation="horizontal">
 
@@ -59,10 +59,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:text="Nama Penerima"
+                android:textColor="@color/black"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:textColor="@color/black"
-                android:text="Nama Lengkap"
                 tools:ignore="HardcodedText" />
 
             <TextView
@@ -71,9 +71,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textAlignment="textEnd"
+                android:textColor="@color/grey"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:textColor="@color/grey"
                 tools:text="Samuel Deviko Kelvin Setiawan" />
         </LinearLayout>
 
@@ -104,6 +104,64 @@
                 android:textStyle="bold"
                 android:textColor="@color/grey"
                 tools:text="3374130402990003" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/name_field_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/name_text_desc2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Nama Pengirim"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:id="@+id/name_content2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAlignment="textEnd"
+                android:textColor="@color/grey"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                tools:text="Aditya Ryan A" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/id_field2"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/id_text_desc2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                tools:text="NIK" />
+
+            <TextView
+                android:id="@+id/id_content2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAlignment="textEnd"
+                android:textColor="@color/grey"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                tools:text="3374130402990004" />
         </LinearLayout>
 
         <LinearLayout
