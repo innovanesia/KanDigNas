@@ -79,16 +79,7 @@ class ScanQRActivity : AppCompatActivity()
         {
             override fun handleOnBackPressed()
             {
-                if (activity.equals("koperasi"))
-                {
-                    startActivity(Intent(this@ScanQRActivity, KoperasiMenuActivity::class.java))
-                    finish()
-                }
-                else if (activity.equals("siswa"))
-                {
-                    startActivity(Intent(this@ScanQRActivity, SiswaMenuActivity::class.java))
-                    finish()
-                }
+                finish()
             }
         })
     }

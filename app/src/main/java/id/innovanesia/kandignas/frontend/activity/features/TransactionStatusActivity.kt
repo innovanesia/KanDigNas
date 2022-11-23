@@ -15,69 +15,82 @@ import id.innovanesia.kandignas.backend.api.InitAPI
 import id.innovanesia.kandignas.backend.models.Users
 import id.innovanesia.kandignas.backend.response.AccountResponse
 import id.innovanesia.kandignas.databinding.ActivityTransactionStatusBinding
-import id.innovanesia.kandignas.frontend.activity.AuthActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.text.DecimalFormat
 import java.text.NumberFormat
 
-class TransactionStatusActivity : AppCompatActivity() {
+class TransactionStatusActivity : AppCompatActivity()
+{
     private lateinit var binds: ActivityTransactionStatusBinding
     private lateinit var sharedPreference: SharedPreferences
     private val keyToken = "key.token"
 
-    companion object {
+    companion object
+    {
         const val STATUS = "STATUS"
         const val TARGET = "TARGET"
         const val AMOUNT = "AMOUNT"
     }
 
     @SuppressLint("SetTextI18n")
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
         super.onCreate(savedInstanceState)
         binds = ActivityTransactionStatusBinding.inflate(layoutInflater)
         setContentView(binds.root)
+
         sharedPreference = getSharedPreferences("KanDigNas", Context.MODE_PRIVATE)
+
         val token = sharedPreference.getString(keyToken, null)!!
-
-
         val status = intent.getStringExtra(STATUS)!!
+
         val user: Users = if (Build.VERSION.SDK_INT >= 33)
             intent.getParcelableExtra(TARGET, Users::class.java)!!
         else
             intent.getParcelableExtra(TARGET)!!
+
         val amount = intent.getIntExtra(AMOUNT, 0)
 
         binds.apply {
-            nameContent.text = user.fullname
+            receiverNameContent.text = user.fullname
             getSenderData(token)
             val format: NumberFormat = DecimalFormat("#,###")
             amountContent.text = "Rp " + format.format(amount)
-            if (status == "success") {
+            if (status == "success")
+            {
                 Glide.with(this@TransactionStatusActivity)
                     .load(R.drawable.success_alert)
                     .into(successIllustration)
                 transactionStatus.text = "Transaksi Sukses!"
-                if (user.nik != "") {
-                    idTextDesc.text = "NIK"
-                    idContent.text = user.nik
-                } else {
-                    idTextDesc.text = "NISN"
-                    idContent.text = user.nisn
+                if (user.nik != "")
+                {
+                    receiverIdTextDesc.text = "NIK"
+                    receiverIdContent.text = user.nik
                 }
-            } else if (status == "failed") {
+                else
+                {
+                    receiverIdTextDesc.text = "NISN"
+                    receiverIdContent.text = user.nisn
+                }
+            }
+            else if (status == "failed")
+            {
                 Glide.with(this@TransactionStatusActivity)
                     .load(R.drawable.failed_alert)
                     .into(successIllustration)
                 transactionStatus.text = "Transaksi Gagal!"
                 seeTransactionHistoryButton.visibility = View.GONE
-                if (user.nik != "") {
-                    idTextDesc.text = "NIK"
-                    idContent.text = user.nik
-                } else {
-                    idTextDesc.text = "NISN"
-                    idContent.text = user.nisn
+                if (user.nik != "")
+                {
+                    receiverIdTextDesc.text = "NIK"
+                    receiverIdContent.text = user.nik
+                }
+                else
+                {
+                    receiverIdTextDesc.text = "NISN"
+                    receiverIdContent.text = user.nisn
                 }
             }
 
@@ -97,40 +110,38 @@ class TransactionStatusActivity : AppCompatActivity() {
         }
     }
 
-    private fun getSenderData(token: String) {
+    private fun getSenderData(token: String)
+    {
         binds.apply {
             InitAPI.api.getAccount("Bearer $token")
-                .enqueue(object : Callback<AccountResponse> {
+                .enqueue(object : Callback<AccountResponse>
+                {
+                    @SuppressLint("SetTextI18n")
                     override fun onResponse(
                         call: Call<AccountResponse>,
                         response: Response<AccountResponse>
-                    ) {
-                        nameContent2.text = response.body()!!.user.fullname
-                        if (response.body()!!.user.nik != "") {
-                            idTextDesc2.text = "NIK"
-                            idContent2.text = response.body()!!.user.nik
-                        } else {
-                            idTextDesc2.text = "NISN"
-                            idContent2.text = response.body()!!.user.nisn
+                    )
+                    {
+                        senderNameContent.text = response.body()!!.user.fullname
+                        if (response.body()!!.user.nik != "")
+                        {
+                            senderIdTextDesc.text = "NIK"
+                            senderIdContent.text = response.body()!!.user.nik
+                        }
+                        else
+                        {
+                            senderIdTextDesc.text = "NISN"
+                            senderIdContent.text = response.body()!!.user.nisn
                         }
                     }
 
-
-                    override fun onFailure(call: Call<AccountResponse>, t: Throwable) {
-                        val delete: SharedPreferences.Editor = sharedPreference.edit()
-                        delete.clear().apply()
+                    override fun onFailure(call: Call<AccountResponse>, t: Throwable)
+                    {
                         Toast.makeText(
                             this@TransactionStatusActivity,
-                            "Gagal masuk! Mohon periksa koneksi.",
+                            "Gagal mendapatkan data. Mohon periksa koneksi internet!",
                             Toast.LENGTH_SHORT
                         ).show()
-                        startActivity(
-                            Intent(
-                                this@TransactionStatusActivity,
-                                AuthActivity::class.java
-                            )
-                        )
-                        finish()
                     }
                 })
         }
