@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import id.innovanesia.kandignas.R
@@ -46,7 +47,7 @@ class TransactionStatusActivity : AppCompatActivity()
         val token = sharedPreference.getString(keyToken, null)!!
         val status = intent.getStringExtra(STATUS)!!
 
-        val user: Users = if (Build.VERSION.SDK_INT >= 33)
+        val user: Users = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
             intent.getParcelableExtra(TARGET, Users::class.java)!!
         else
             intent.getParcelableExtra(TARGET)!!

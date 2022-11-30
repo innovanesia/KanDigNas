@@ -282,11 +282,18 @@ class SelectNominalActivity : AppCompatActivity()
                                                 response: Response<TransactionFlowResponse>
                                             )
                                             {
-                                                transactionStatus(
-                                                    target!!,
-                                                    nominalInput.text.toString().toInt(),
-                                                    "success"
-                                                )
+                                                if (response.body() == null)
+                                                    transactionStatus(
+                                                        target!!,
+                                                        nominalInput.text.toString().toInt(),
+                                                        "failed"
+                                                    )
+                                                else
+                                                    transactionStatus(
+                                                        target!!,
+                                                        nominalInput.text.toString().toInt(),
+                                                        "success"
+                                                    )
                                                 dialog.dismiss()
                                             }
 
@@ -320,11 +327,18 @@ class SelectNominalActivity : AppCompatActivity()
                                                 response: Response<TransactionFlowResponse>
                                             )
                                             {
-                                                transactionStatus(
-                                                    target!!,
-                                                    nominalInput.text.toString().toInt(),
-                                                    "success"
-                                                )
+                                                if (response.body() == null)
+                                                    transactionStatus(
+                                                        target!!,
+                                                        nominalInput.text.toString().toInt(),
+                                                        "failed"
+                                                    )
+                                                else
+                                                    transactionStatus(
+                                                        target!!,
+                                                        nominalInput.text.toString().toInt(),
+                                                        "success"
+                                                    )
                                                 dialog.dismiss()
                                             }
 
@@ -358,11 +372,18 @@ class SelectNominalActivity : AppCompatActivity()
                                                 response: Response<TransactionFlowResponse>
                                             )
                                             {
-                                                transactionStatus(
-                                                    target!!,
-                                                    nominalInput.text.toString().toInt(),
-                                                    "success"
-                                                )
+                                                if (response.body() == null)
+                                                    transactionStatus(
+                                                        target!!,
+                                                        nominalInput.text.toString().toInt(),
+                                                        "failed"
+                                                    )
+                                                else
+                                                    transactionStatus(
+                                                        target!!,
+                                                        nominalInput.text.toString().toInt(),
+                                                        "success"
+                                                    )
                                                 dialog.dismiss()
                                             }
 
@@ -406,11 +427,18 @@ class SelectNominalActivity : AppCompatActivity()
                                                 )
                                                 {
                                                     Log.e("Withdraw Response", response.body().toString())
-                                                    transactionStatus(
-                                                        target!!,
-                                                        nominalInput.text.toString().toInt(),
-                                                        "success"
-                                                    )
+                                                    if (response.body() == null)
+                                                        transactionStatus(
+                                                            target!!,
+                                                            nominalInput.text.toString().toInt(),
+                                                            "failed"
+                                                        )
+                                                    else
+                                                        transactionStatus(
+                                                            target!!,
+                                                            nominalInput.text.toString().toInt(),
+                                                            "success"
+                                                        )
                                                     dialog.dismiss()
                                                 }
 
