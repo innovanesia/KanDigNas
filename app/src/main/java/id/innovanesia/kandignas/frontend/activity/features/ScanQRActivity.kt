@@ -11,8 +11,6 @@ import androidx.core.content.ContextCompat
 import com.budiyev.android.codescanner.*
 import com.google.android.material.snackbar.Snackbar
 import id.innovanesia.kandignas.databinding.ActivityScanQrBinding
-import id.innovanesia.kandignas.frontend.activity.koperasi.KoperasiMenuActivity
-import id.innovanesia.kandignas.frontend.activity.siswa.SiswaMenuActivity
 
 class ScanQRActivity : AppCompatActivity()
 {
@@ -30,8 +28,10 @@ class ScanQRActivity : AppCompatActivity()
         super.onCreate(savedInstanceState)
         binds = ActivityScanQrBinding.inflate(layoutInflater)
         setContentView(binds.root)
+
         val activity = intent.getStringExtra(ACTIVITY)
         val permission = ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA)
+
         if (permission != PackageManager.PERMISSION_GRANTED)
         {
             ActivityCompat.requestPermissions(
