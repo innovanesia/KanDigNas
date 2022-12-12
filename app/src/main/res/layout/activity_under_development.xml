@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_white"
-    tools:context=".frontend.activity.features.ShowQRActivity">
+    tools:context=".frontend.activity.UnderDevelopmentActivity">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
@@ -18,65 +18,54 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:navigationIcon="@drawable/ic_baseline_arrow_back_ios_new_24"
-        app:navigationIconTint="@color/black"
-        app:title="Tampil QR Code"
+        app:title="Coming Soon"
         app:titleCentered="true"
         app:titleTextAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
         app:titleTextColor="@color/black" />
 
-    <TextView
-        android:id="@+id/save_qr_reminder"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="8dp"
-        android:text="Tap QR Code\nUntuk Menyimpan QR Code"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/qr_code_img"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:ignore="HardcodedText" />
-
     <ImageView
-        android:id="@+id/qr_code_img"
-        android:layout_width="350dp"
-        android:layout_height="350dp"
-        app:layout_constraintBottom_toTopOf="@+id/build_text"
+        android:id="@+id/under_development_img"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        app:layout_constraintVertical_bias="0.4"
-        app:srcCompat="@drawable/ic_baseline_qr_code_scanner_24"
-        tools:ignore="ContentDescription,ImageContrastCheck" />
+        app:layout_constraintVertical_bias="0.35000002"
+        app:srcCompat="@drawable/under_construction_illustration"
+        tools:ignore="ContentDescription" />
 
     <TextView
-        android:id="@+id/id_text"
-        android:layout_width="wrap_content"
+        android:id="@+id/under_dev_title"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="18dp"
-        tools:text="3374130402990003"
-        android:textColor="@color/black"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="32dp"
+        android:text="Dalam Tahap Pengembangan"
+        android:textAlignment="center"
+        android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/qr_code_img"
-        app:layout_constraintStart_toStartOf="@+id/qr_code_img"
-        app:layout_constraintTop_toBottomOf="@+id/qr_code_img"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/under_development_img"
         tools:ignore="HardcodedText" />
 
     <TextView
-        android:id="@+id/username_text"
-        android:layout_width="wrap_content"
+        android:id="@+id/under_dev_subtitle"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
-        tools:text="Samuel Deviko Kelvin Setiawan"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="@+id/qr_code_img"
-        app:layout_constraintStart_toStartOf="@+id/qr_code_img"
-        app:layout_constraintTop_toBottomOf="@+id/id_text"
+        android:layout_marginEnd="24dp"
+        android:text="Fitur masih dalam tahap pengembangan.\nMohon tunggu ya!"
+        android:textAlignment="center"
+        android:textSize="14sp"
+        android:textColor="@color/grey"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/under_dev_title"
         tools:ignore="HardcodedText" />
 
     <TextView

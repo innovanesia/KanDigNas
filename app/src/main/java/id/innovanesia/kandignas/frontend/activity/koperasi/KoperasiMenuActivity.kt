@@ -6,7 +6,9 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import com.denzcoskun.imageslider.models.SlideModel
 import id.innovanesia.kandignas.R
@@ -14,19 +16,18 @@ import id.innovanesia.kandignas.backend.api.InitAPI
 import id.innovanesia.kandignas.backend.response.AccountResponse
 import id.innovanesia.kandignas.databinding.ActivityKoperasiMenuBinding
 import id.innovanesia.kandignas.frontend.activity.AuthActivity
+import id.innovanesia.kandignas.frontend.activity.UnderDevelopmentActivity
 import id.innovanesia.kandignas.frontend.activity.features.ScanQRActivity
+import id.innovanesia.kandignas.frontend.activity.features.TransactionHistoryActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.text.DecimalFormat
-import java.text.NumberFormat
 
 class KoperasiMenuActivity : AppCompatActivity()
 {
     private lateinit var binds: ActivityKoperasiMenuBinding
     private lateinit var sharedPreference: SharedPreferences
-    private  val keyToken ="key.token"
-    private  val keyType ="key.type"
+    private val keyToken = "key.token"
 
     companion object
     {
@@ -45,18 +46,45 @@ class KoperasiMenuActivity : AppCompatActivity()
         binds.apply {
             setSupportActionBar(toolbar)
 
+            mainMenuKoperasiLoading.visibility = View.VISIBLE
+
+            getDB(token)
+
+            swipeRefreshLayout.setOnRefreshListener {
+                getDB(token)
+            }
+
             setNews()
 
-           getDB(token)
-
-            topupUserButton.setOnClickListener {
+            koperasiScanqrButton.setOnClickListener {
                 startActivity(Intent(this@KoperasiMenuActivity, ScanQRActivity::class.java)
                     .also {
                         it.putExtra("ACTIVITY", type)
                     })
-                finish()
+            }
+            transactionHistoryButton.setOnClickListener {
+                startActivity(
+                    Intent(
+                        this@KoperasiMenuActivity, TransactionHistoryActivity::class.java
+                    )
+                )
+            }
+            editprofileButton.setOnClickListener {
+                startActivity(
+                    Intent(
+                        this@KoperasiMenuActivity, UnderDevelopmentActivity::class.java
+                    )
+                )
             }
         }
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true)
+        {
+            override fun handleOnBackPressed()
+            {
+                finish()
+            }
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean
@@ -75,7 +103,7 @@ class KoperasiMenuActivity : AppCompatActivity()
                 delete.clear().apply()
                 Toast.makeText(
                     this@KoperasiMenuActivity,
-                    "Signed out sucessfully!",
+                    "Berhasil keluar!",
                     Toast.LENGTH_SHORT
                 ).show()
                 startActivity(Intent(this@KoperasiMenuActivity, AuthActivity::class.java))
@@ -109,35 +137,36 @@ class KoperasiMenuActivity : AppCompatActivity()
             newsCarousel.setImageList(news)
         }
     }
-    private fun getDB(token : String)
+
+    private fun getDB(token: String)
     {
-         binds.apply {
-             InitAPI.api.getAccount("Bearer $token")
-                 .enqueue(object : Callback<AccountResponse>
-                 {
-                     override fun onResponse(
-                         call: Call<AccountResponse>,
-                         response: Response<AccountResponse>
-                     )
-                     {
-                         greetingsText.text = response.body()!!.user.fullname
-                     }
+        binds.apply {
+            InitAPI.api.getAccount("Bearer $token")
+                .enqueue(object : Callback<AccountResponse>
+                {
+                    override fun onResponse(
+                        call: Call<AccountResponse>,
+                        response: Response<AccountResponse>
+                    )
+                    {
+                        greetingsText.text = response.body()!!.user.fullname
+                    }
 
-                     override fun onFailure(call: Call<AccountResponse>, t: Throwable)
-                     {
-                         val delete: SharedPreferences.Editor = sharedPreference.edit()
-                         delete.clear().apply()
-                         Toast.makeText(
-                             this@KoperasiMenuActivity,
-                             "Gagal masuk! Mohon periksa koneksi.",
-                             Toast.LENGTH_SHORT
-                         ).show()
-                         startActivity(Intent(this@KoperasiMenuActivity, AuthActivity::class.java))
-                         finish()
-                     }
-                 })
-
-         }
-
+                    override fun onFailure(call: Call<AccountResponse>, t: Throwable)
+                    {
+                        val delete: SharedPreferences.Editor = sharedPreference.edit()
+                        delete.clear().apply()
+                        Toast.makeText(
+                            this@KoperasiMenuActivity,
+                            "Gagal masuk! Mohon periksa koneksi.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        startActivity(Intent(this@KoperasiMenuActivity, AuthActivity::class.java))
+                        finish()
+                    }
+                })
+            mainMenuKoperasiLoading.visibility = View.GONE
+            swipeRefreshLayout.isRefreshing = false
+        }
     }
 }

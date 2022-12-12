@@ -1,13 +1,8 @@
 package id.innovanesia.kandignas.backend.api
 
-import id.innovanesia.kandignas.backend.response.AccountResponse
-import id.innovanesia.kandignas.backend.response.LoginRegisterResponse
+import id.innovanesia.kandignas.backend.response.*
 import retrofit2.Call
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
-import retrofit2.http.GET
-import retrofit2.http.Header
-import retrofit2.http.POST
+import retrofit2.http.*
 
 interface GetAPI
 {
@@ -27,13 +22,54 @@ interface GetAPI
         @Field("email") email: String,
         @Field("username") username: String,
         @Field("password") password: String,
+        @Field("phone") phone: String,
         @Field("nis") nis: String,
         @Field("nisn") nisn: String,
         @Field("nik") nik: String,
     ): Call<LoginRegisterResponse>
 
+    @GET("schools")
+    fun getSchoolList() : Call<SchoolResponse>
+
     @GET("account")
     fun getAccount(
         @Header("Authorization") token: String
     ) : Call<AccountResponse>
+
+    @GET("account/transactions")
+    fun getTransaction(
+        @Header("Authorization") token: String,
+    ) : Call<TransactionResponse>
+
+    @FormUrlEncoded
+    @POST("account/topup")
+    fun topupTransaction(
+        @Header("Authorization") token: String,
+        @Field("user_to") id: Int,
+        @Field("amount") amount: Int
+    ) : Call<TransactionFlowResponse>
+
+    @FormUrlEncoded
+    @POST("account/payment")
+    fun paymentTransaction(
+        @Header("Authorization") token: String,
+        @Field("user_to") id: Int,
+        @Field("amount") amount: Int
+    ) : Call<TransactionFlowResponse>
+
+    @FormUrlEncoded
+    @POST("account/transfer")
+    fun transferTransaction(
+        @Header("Authorization") token: String,
+        @Field("user_to") id: Int,
+        @Field("amount") amount: Int
+    ) : Call<TransactionFlowResponse>
+
+    @FormUrlEncoded
+    @POST("account/withdraw")
+    fun withdrawTransaction(
+        @Header("Authorization") token: String,
+        @Field("user_to") id: Int,
+        @Field("amount") amount: Int
+    ) : Call<TransactionFlowResponse>
 }

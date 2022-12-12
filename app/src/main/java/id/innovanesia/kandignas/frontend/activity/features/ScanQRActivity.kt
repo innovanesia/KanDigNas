@@ -11,8 +11,6 @@ import androidx.core.content.ContextCompat
 import com.budiyev.android.codescanner.*
 import com.google.android.material.snackbar.Snackbar
 import id.innovanesia.kandignas.databinding.ActivityScanQrBinding
-import id.innovanesia.kandignas.frontend.activity.koperasi.KoperasiMenuActivity
-import id.innovanesia.kandignas.frontend.activity.siswa.SiswaMenuActivity
 
 class ScanQRActivity : AppCompatActivity()
 {
@@ -32,8 +30,8 @@ class ScanQRActivity : AppCompatActivity()
         setContentView(binds.root)
 
         val activity = intent.getStringExtra(ACTIVITY)
-
         val permission = ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA)
+
         if (permission != PackageManager.PERMISSION_GRANTED)
         {
             ActivityCompat.requestPermissions(
@@ -59,28 +57,16 @@ class ScanQRActivity : AppCompatActivity()
                 isFlashEnabled = false
 
                 decodeCallback = DecodeCallback { res ->
-                    if (activity == "siswa")
-                    {
-                        startActivity(Intent(this@ScanQRActivity, SelectNominalActivity::class.java)
-                            .also { int ->
-                                int.putExtra("USERNAME", res.text)
-                                int.putExtra("ACTIVITY", activity)
-                            })
-                        finish()
-                    }
-                    else if (activity == "koperasi")
-                    {
-                        startActivity(Intent(this@ScanQRActivity, SelectNominalActivity::class.java)
-                            .also { int ->
-                                int.putExtra("USERNAME", res.text)
-                                int.putExtra("ACTIVITY", activity)
-                            })
-                        finish()
-                    }
+                    startActivity(Intent(this@ScanQRActivity, SelectNominalActivity::class.java)
+                        .also { int ->
+                            int.putExtra("TOKEN", res.text)
+                            int.putExtra("ACTIVITY", activity)
+                        })
+                    finish()
                 }
 
                 errorCallback = ErrorCallback {
-                    Log.e("Main", "codeScanner: ${it.message}")
+                    Log.e("ERR", "codeScanner: ${it.message}")
                 }
 
                 qrscannerView.setOnClickListener {
@@ -93,16 +79,7 @@ class ScanQRActivity : AppCompatActivity()
         {
             override fun handleOnBackPressed()
             {
-                if (activity.equals("koperasi"))
-                {
-                    startActivity(Intent(this@ScanQRActivity, KoperasiMenuActivity::class.java))
-                    finish()
-                }
-                else if (activity.equals("siswa"))
-                {
-                    startActivity(Intent(this@ScanQRActivity, SiswaMenuActivity::class.java))
-                    finish()
-                }
+                finish()
             }
         })
     }

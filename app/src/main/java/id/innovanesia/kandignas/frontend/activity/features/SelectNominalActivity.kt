@@ -8,29 +8,40 @@ import android.graphics.Rect
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import id.innovanesia.kandignas.R
+import id.innovanesia.kandignas.backend.api.InitAPI
+import id.innovanesia.kandignas.backend.models.Users
+import id.innovanesia.kandignas.backend.response.AccountResponse
+import id.innovanesia.kandignas.backend.response.TransactionFlowResponse
 import id.innovanesia.kandignas.databinding.ActivitySelectNominalBinding
 import id.innovanesia.kandignas.databinding.TransferConfirmationDialogBinding
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.text.DecimalFormat
+import java.text.NumberFormat
 import java.util.*
 
 class SelectNominalActivity : AppCompatActivity()
 {
     private lateinit var binds: ActivitySelectNominalBinding
     private lateinit var sharedPreference: SharedPreferences
-    private val keyUser = "key.user_name"
+    private val keyToken = "key.token"
 
     companion object
     {
         private const val ACTIVITY = "ACTIVITY"
-        private const val USERNAME = "USERNAME"
+        private const val TOKEN = "TOKEN"
     }
 
     @SuppressLint("SetTextI18n")
@@ -39,27 +50,108 @@ class SelectNominalActivity : AppCompatActivity()
         super.onCreate(savedInstanceState)
         binds = ActivitySelectNominalBinding.inflate(layoutInflater)
         setContentView(binds.root)
-        val activity = intent.getStringExtra(ACTIVITY)
-        val username = intent.getStringExtra(USERNAME)!!
-        val userBalance: Int? = null
+
+        val activity = intent.getStringExtra(ACTIVITY)!!
+        val targetToken = intent.getStringExtra(TOKEN)!!
 
         sharedPreference = getSharedPreferences("KanDigNas", Context.MODE_PRIVATE)
+        val userToken = sharedPreference.getString(keyToken, null)!!
+        var target: Users? = null
+        var user: Users? = null
 
         binds.apply {
             setSupportActionBar(toolbar)
+
             toolbar.setNavigationOnClickListener {
                 finish()
             }
 
-            if (activity == "siswa")
-            {
+            selectNominalLoading.visibility = View.VISIBLE
 
-            }
-            else
-            {
-                dividerInfo.visibility = View.GONE
-                yourBalanceContent.visibility = View.GONE
-            }
+            InitAPI.api.getAccount("Bearer $targetToken")
+                .enqueue(object : Callback<AccountResponse>
+                {
+                    override fun onResponse(
+                        call: Call<AccountResponse>,
+                        response: Response<AccountResponse>
+                    )
+                    {
+                        target = response.body()?.user!!
+                        namaField.text = target?.fullname
+                        usernameField.text = target?.username
+                        typeField.text = target?.type
+                        selectNominalLoading.visibility = View.GONE
+                    }
+
+                    override fun onFailure(call: Call<AccountResponse>, t: Throwable)
+                    {
+                        t.printStackTrace()
+                        Toast.makeText(
+                            this@SelectNominalActivity,
+                            "Terjadi kesalahan, mohon coba kembali.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        startActivity(Intent(this@SelectNominalActivity, ScanQRActivity::class.java)
+                            .also {
+                                it.putExtra("ACTIVITY", activity)
+                            })
+                        finish()
+                    }
+                })
+
+            InitAPI.api.getAccount("Bearer $userToken")
+                .enqueue(object : Callback<AccountResponse>
+                {
+                    override fun onResponse(
+                        call: Call<AccountResponse>,
+                        response: Response<AccountResponse>
+                    )
+                    {
+                        user = response.body()?.user!!
+                        if (activity == "siswa")
+                        {
+                            val format: NumberFormat = DecimalFormat("#,###")
+                            val balance = format.format(user?.balance.toString().toInt())
+                            yourBalanceField.text = "Rp $balance"
+
+                            if (user?.balance == 0)
+                                yourBalanceField.setTextColor(
+                                    ContextCompat.getColor(
+                                        this@SelectNominalActivity,
+                                        R.color.red
+                                    )
+                                )
+                            else
+                                yourBalanceField.setTextColor(
+                                    ContextCompat.getColor(
+                                        this@SelectNominalActivity,
+                                        R.color.blue
+                                    )
+                                )
+                            selectNominalLoading.visibility = View.GONE
+                        }
+                        else
+                        {
+                            dividerInfo.visibility = View.GONE
+                            yourBalanceContent.visibility = View.GONE
+                        }
+                    }
+
+                    override fun onFailure(call: Call<AccountResponse>, t: Throwable)
+                    {
+                        t.printStackTrace()
+                        Toast.makeText(
+                            this@SelectNominalActivity,
+                            "Terjadi kesalahan, mohon coba kembali.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        startActivity(Intent(this@SelectNominalActivity, ScanQRActivity::class.java)
+                            .also {
+                                it.putExtra("ACTIVITY", activity)
+                            })
+                        finish()
+                    }
+                })
 
             setNominalButton()
 
@@ -141,39 +233,231 @@ class SelectNominalActivity : AppCompatActivity()
                         dialog.show()
 
                         dialogBinding.apply {
+                            nameTargetField.text = target?.fullname
+                            if (target?.nik != "")
+                            {
+                                idTarget.text = "NIK"
+                                idTargetField.text = target?.nik
+                            }
+                            else
+                            {
+                                idTarget.text = "NISN"
+                                idTargetField.text = target?.nisn
+                            }
+                            val format: NumberFormat = DecimalFormat("#,###")
+                            amountTargetField.text =
+                                "Rp " + format.format(nominalInput.text.toString().toInt())
 
                             cancelButtonDialog.setOnClickListener {
                                 dialog.dismiss()
                             }
 
                             okButtonDialog.setOnClickListener {
-                                if (userBalance == 0 || userBalance!! < nominalInput.text.toString()
-                                        .toInt()
+                                if (user?.type != "koperasi" &&
+                                    (user?.balance == 0 || user?.balance!! < nominalInput.text.toString()
+                                        .toInt())
                                 )
                                 {
-                                    startActivity(
-                                        Intent(
-                                            this@SelectNominalActivity,
-                                            TransactionSuccessActivity::class.java
-                                        ).also {
-                                            it.putExtra("STATUS", "failed")
-                                            it.putExtra("ACTIVITY", activity)
-                                            it.putExtra("TARGET_USER", username)
-                                            it.putExtra("AMOUNT", nominalInput.text.toString())
-                                        }
+                                    transactionStatus(
+                                        target!!,
+                                        nominalInput.text.toString().toInt(),
+                                        "failed"
                                     )
-                                    finish()
+                                    dialog.dismiss()
                                 }
                                 else
                                 {
-                                    /*if (activity == "koperasi")
+                                    if ((user?.type == "siswa" || user?.type == "umum")
+                                        && (target?.type == "siswa" || target?.type == "umum")
+                                    )
                                     {
+                                        InitAPI.api.transferTransaction(
+                                            "Bearer $userToken",
+                                            target!!.id,
+                                            nominalInput.text.toString().toInt()
+                                        ).enqueue(object : Callback<TransactionFlowResponse>
+                                        {
+                                            override fun onResponse(
+                                                call: Call<TransactionFlowResponse>,
+                                                response: Response<TransactionFlowResponse>
+                                            )
+                                            {
+                                                if (response.body() == null)
+                                                    transactionStatus(
+                                                        target!!,
+                                                        nominalInput.text.toString().toInt(),
+                                                        "failed"
+                                                    )
+                                                else
+                                                    transactionStatus(
+                                                        target!!,
+                                                        nominalInput.text.toString().toInt(),
+                                                        "success"
+                                                    )
+                                                dialog.dismiss()
+                                            }
 
+                                            override fun onFailure(
+                                                call: Call<TransactionFlowResponse>,
+                                                t: Throwable
+                                            )
+                                            {
+                                                t.printStackTrace()
+                                                transactionStatus(
+                                                    target!!,
+                                                    nominalInput.text.toString().toInt(),
+                                                    "failed"
+                                                )
+                                                dialog.dismiss()
+                                            }
+                                        })
                                     }
-                                    else if (activity == "siswa")
+                                    else if ((user?.type == "siswa" || user?.type == "umum")
+                                        && target?.type == "kantin"
+                                    )
                                     {
+                                        InitAPI.api.paymentTransaction(
+                                            "Bearer $userToken",
+                                            target!!.id,
+                                            nominalInput.text.toString().toInt()
+                                        ).enqueue(object : Callback<TransactionFlowResponse>
+                                        {
+                                            override fun onResponse(
+                                                call: Call<TransactionFlowResponse>,
+                                                response: Response<TransactionFlowResponse>
+                                            )
+                                            {
+                                                if (response.body() == null)
+                                                    transactionStatus(
+                                                        target!!,
+                                                        nominalInput.text.toString().toInt(),
+                                                        "failed"
+                                                    )
+                                                else
+                                                    transactionStatus(
+                                                        target!!,
+                                                        nominalInput.text.toString().toInt(),
+                                                        "success"
+                                                    )
+                                                dialog.dismiss()
+                                            }
 
-                                    }*/
+                                            override fun onFailure(
+                                                call: Call<TransactionFlowResponse>,
+                                                t: Throwable
+                                            )
+                                            {
+                                                t.printStackTrace()
+                                                transactionStatus(
+                                                    target!!,
+                                                    nominalInput.text.toString().toInt(),
+                                                    "failed"
+                                                )
+                                                dialog.dismiss()
+                                            }
+                                        })
+                                    }
+                                    else if (user?.type == "koperasi" &&
+                                        (target?.type == "siswa" || target?.type == "umum")
+                                    )
+                                    {
+                                        InitAPI.api.topupTransaction(
+                                            "Bearer $userToken",
+                                            target!!.id,
+                                            nominalInput.text.toString().toInt()
+                                        ).enqueue(object : Callback<TransactionFlowResponse>
+                                        {
+                                            override fun onResponse(
+                                                call: Call<TransactionFlowResponse>,
+                                                response: Response<TransactionFlowResponse>
+                                            )
+                                            {
+                                                if (response.body() == null)
+                                                    transactionStatus(
+                                                        target!!,
+                                                        nominalInput.text.toString().toInt(),
+                                                        "failed"
+                                                    )
+                                                else
+                                                    transactionStatus(
+                                                        target!!,
+                                                        nominalInput.text.toString().toInt(),
+                                                        "success"
+                                                    )
+                                                dialog.dismiss()
+                                            }
+
+                                            override fun onFailure(
+                                                call: Call<TransactionFlowResponse>,
+                                                t: Throwable
+                                            )
+                                            {
+                                                t.printStackTrace()
+                                                transactionStatus(
+                                                    target!!,
+                                                    nominalInput.text.toString().toInt(),
+                                                    "failed"
+                                                )
+                                                dialog.dismiss()
+                                            }
+                                        })
+                                    }
+                                    else if (user?.type == "koperasi" && target?.type == "kantin")
+                                    {
+                                        if (target?.balance == 0 || target?.balance!! < nominalInput.text.toString().toInt())
+                                        {
+                                            transactionStatus(
+                                                target!!,
+                                                nominalInput.text.toString().toInt(),
+                                                "failed"
+                                            )
+                                            dialog.dismiss()
+                                        }
+                                        else
+                                        {
+                                            InitAPI.api.withdrawTransaction(
+                                                "Bearer $userToken",
+                                                target!!.id,
+                                                nominalInput.text.toString().toInt()
+                                            ).enqueue(object : Callback<TransactionFlowResponse>
+                                            {
+                                                override fun onResponse(
+                                                    call: Call<TransactionFlowResponse>,
+                                                    response: Response<TransactionFlowResponse>
+                                                )
+                                                {
+                                                    Log.e("Withdraw Response", response.body().toString())
+                                                    if (response.body() == null)
+                                                        transactionStatus(
+                                                            target!!,
+                                                            nominalInput.text.toString().toInt(),
+                                                            "failed"
+                                                        )
+                                                    else
+                                                        transactionStatus(
+                                                            target!!,
+                                                            nominalInput.text.toString().toInt(),
+                                                            "success"
+                                                        )
+                                                    dialog.dismiss()
+                                                }
+
+                                                override fun onFailure(
+                                                    call: Call<TransactionFlowResponse>,
+                                                    t: Throwable
+                                                )
+                                                {
+                                                    t.printStackTrace()
+                                                    transactionStatus(
+                                                        target!!,
+                                                        nominalInput.text.toString().toInt(),
+                                                        "failed"
+                                                    )
+                                                    dialog.dismiss()
+                                                }
+                                            })
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -214,14 +498,6 @@ class SelectNominalActivity : AppCompatActivity()
                 finish()
             }
         })
-    }
-
-    @SuppressLint("SetTextI18n")
-    private fun getData()
-    {
-        binds.apply {
-
-        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -503,6 +779,23 @@ class SelectNominalActivity : AppCompatActivity()
                 )
                 oneHundredK.setTextColor(ContextCompat.getColor(applicationContext, R.color.white))
             }
+        }
+    }
+
+    private fun transactionStatus(target: Users, nominal: Int, status: String)
+    {
+        binds.apply {
+            startActivity(
+                Intent(
+                    this@SelectNominalActivity,
+                    TransactionStatusActivity::class.java
+                ).also {
+                    it.putExtra("STATUS", status)
+                    it.putExtra("TARGET", target)
+                    it.putExtra("AMOUNT", nominal)
+                }
+            )
+            finish()
         }
     }
 
