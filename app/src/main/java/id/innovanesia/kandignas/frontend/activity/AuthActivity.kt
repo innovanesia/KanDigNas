@@ -62,6 +62,16 @@ class AuthActivity : AppCompatActivity()
 
         binds.apply {
             loginButton.setOnClickListener {
+                if (usernameInput.text.toString().trim().isEmpty())
+                {
+                    usernameInput.error = "Username harus diisi!"
+                    usernameInput.requestFocus()
+                }
+                if (passwordInput.text.toString().trim().isEmpty())
+                {
+                    passwordInput.error = "Kata sandi harus diisi!"
+                    passwordInput.requestFocus()
+                }
                 if (usernameInput.text.toString().trim().isNotEmpty() && passwordInput.text.toString().trim().isNotEmpty())
                 {
                     loadingBar.visibility = View.VISIBLE
@@ -78,9 +88,11 @@ class AuthActivity : AppCompatActivity()
                                 {
                                     Snackbar.make(
                                         binds.root,
-                                        "Login gagal. Mohon coba lagi!",
+                                        "Gagal masuk, akun tidak ditemukan!",
                                         Snackbar.LENGTH_SHORT
                                     ).show()
+                                    usernameInput.error = ""
+                                    passwordInput.error = ""
                                     loadingBar.visibility = View.GONE
                                 }
                                 else
@@ -106,6 +118,8 @@ class AuthActivity : AppCompatActivity()
                                             "Pengguna tidak terdaftar sebagai akun publik.",
                                             Snackbar.LENGTH_SHORT
                                         ).show()
+                                        usernameInput.error
+                                        passwordInput.error
                                         loadingBar.visibility = View.GONE
                                     }
                                 }

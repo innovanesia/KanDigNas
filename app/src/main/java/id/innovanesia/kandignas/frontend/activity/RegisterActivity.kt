@@ -3,6 +3,7 @@ package id.innovanesia.kandignas.frontend.activity
 import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
+import android.util.Patterns
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -29,6 +30,12 @@ class RegisterActivity : AppCompatActivity()
         setContentView(binds.root)
 
         binds.apply {
+            setSupportActionBar(toolbar)
+
+            toolbar.setNavigationOnClickListener {
+                finish()
+            }
+
             var type: String?
 
             niknipLayout.visibility = View.GONE
@@ -41,8 +48,18 @@ class RegisterActivity : AppCompatActivity()
             usernameLayout.visibility = View.GONE
             passwordLayout.visibility = View.GONE
             confirmpassLayout.visibility = View.GONE
+            submitButton.visibility = View.GONE
 
             kantinType.setOnClickListener {
+                niknipInput.error = null
+                nisInput.error = null
+                nisnInput.error = null
+                namaInput.error = null
+                kontakInput.error = null
+                emailInput.error = null
+                usernameInput.error = null
+                passwordInput.error = null
+                confirmpassInput.error = null
                 val selectedId = typeGroup.checkedRadioButtonId
                 val button: RadioButton = findViewById(selectedId)
 
@@ -61,6 +78,15 @@ class RegisterActivity : AppCompatActivity()
             }
 
             umumType.setOnClickListener {
+                niknipInput.error = null
+                nisInput.error = null
+                nisnInput.error = null
+                namaInput.error = null
+                kontakInput.error = null
+                emailInput.error = null
+                usernameInput.error = null
+                passwordInput.error = null
+                confirmpassInput.error = null
                 val selectedId = typeGroup.checkedRadioButtonId
                 val button: RadioButton = findViewById(selectedId)
 
@@ -79,6 +105,15 @@ class RegisterActivity : AppCompatActivity()
             }
 
             siswaType.setOnClickListener {
+                niknipInput.error = null
+                nisInput.error = null
+                nisnInput.error = null
+                namaInput.error = null
+                kontakInput.error = null
+                emailInput.error = null
+                usernameInput.error = null
+                passwordInput.error = null
+                confirmpassInput.error = null
                 val selectedId = typeGroup.checkedRadioButtonId
                 val button: RadioButton = findViewById(selectedId)
 
@@ -102,11 +137,7 @@ class RegisterActivity : AppCompatActivity()
     {
         var schoolId = 0
         binds.apply {
-            setSupportActionBar(toolbar)
-
-            toolbar.setNavigationOnClickListener {
-                finish()
-            }
+            submitButton.visibility = View.VISIBLE
 
             InitAPI.api.getSchoolList()
                 .enqueue(object : Callback<SchoolResponse>
@@ -165,25 +196,37 @@ class RegisterActivity : AppCompatActivity()
             submitButton.setOnClickListener {
                 if (type.lowercase() == "umum" || type.lowercase() == "kantin")
                 {
-                    if (niknipInput.text!!.isEmpty() || namaInput.text!!.isEmpty()
-                        || kontakInput.text!!.isEmpty() || emailInput.text!!.isEmpty()
-                        || usernameInput.text!!.isEmpty() || passwordInput.text!!.isEmpty()
-                        || confirmpassInput.text!!.isEmpty() || schoolId == 0
-                    )
+                    if (niknipInput.text!!.isEmpty())
+                        niknipInput.error = "NIK/NIP tidak boleh kosong!"
+                    if (namaInput.text!!.isEmpty())
+                        namaInput.error = "Nama tidak boleh kosong!"
+                    if (kontakInput.text!!.isEmpty())
+                        kontakInput.error = "Ponsel tidak boleh kosong!"
+                    if (emailInput.text!!.isEmpty())
+                        emailInput.error = "Email tidak boleh kosong!"
+                    if (usernameInput.text!!.isEmpty())
+                        usernameInput.error = "Username tidak boleh kosong!"
+                    if (passwordInput.text!!.isEmpty())
+                        passwordInput.error = "Kata Sandi tidak boleh kosong!"
+                    if (confirmpassInput.text!!.isEmpty())
+                        confirmpassInput.error = "Konfirmasi Kata Sandi tidak boleh kosong!"
+                    else if (!Patterns.EMAIL_ADDRESS.matcher(emailInput.text.toString()).matches())
                     {
-                        Snackbar.make(
-                            binds.root,
-                            "Mohon isi semua data!",
-                            Snackbar.LENGTH_SHORT
-                        )
-                            .show()
+                        emailInput.error = "Email tidak valid!"
+                        emailInput.requestFocus()
                     }
                     else if (passwordInput.text.toString() != confirmpassInput.text.toString())
-                        Snackbar.make(
-                            binds.root,
-                            "Kata sandi tidak sama!",
-                            Snackbar.LENGTH_SHORT
-                        ).show()
+                    {
+                        passwordInput.error = "Kata sandi tidak sama!"
+                        confirmpassInput.error = "Kata sandi tidak sama!"
+                    }
+                    else if (passwordInput.text.toString().trim().length < 8 || confirmpassInput.text.toString().trim().length < 8)
+                    {
+                        passwordInput.error = "Kata sandi minimal 8 karakter!"
+                        confirmpassInput.error = "Kata sandi minimal 8 karakter!"
+                    }
+                    else if (usernameInput.text.toString().length < 6)
+                        usernameInput.error = "Username harus unik dan minimal 6 karakter!"
                     else
                     {
                         dataInsert(type, schoolId)
@@ -191,25 +234,40 @@ class RegisterActivity : AppCompatActivity()
                 }
                 else if (type.lowercase() == "siswa")
                 {
-                    if (nisnInput.text!!.isEmpty() || nisInput.text!!.isEmpty() || namaInput.text!!.isEmpty()
-                        || kontakInput.text!!.isEmpty() || emailInput.text!!.isEmpty()
-                        || usernameInput.text!!.isEmpty() || passwordInput.text!!.isEmpty()
-                        || confirmpassInput.text!!.isEmpty() || schoolId == 0
-                    )
+                    niknipInput.error = null
+                    if (nisnInput.text!!.isEmpty())
+                        nisnInput.error = "NISN tidak boleh kosong!"
+                    if (nisInput.text!!.isEmpty())
+                        nisInput.error = "NIS tidak boleh kosong!"
+                    if (namaInput.text!!.isEmpty())
+                        namaInput.error = "Nama tidak boleh kosong!"
+                    if (kontakInput.text!!.isEmpty())
+                        kontakInput.error = "Ponsel tidak boleh kosong!"
+                    if (emailInput.text!!.isEmpty())
+                        emailInput.error = "Email tidak boleh kosong!"
+                    if (usernameInput.text!!.isEmpty())
+                        usernameInput.error = "Username tidak boleh kosong!"
+                    if (passwordInput.text!!.isEmpty())
+                        passwordInput.error = "Kata Sandi tidak boleh kosong!"
+                    if (confirmpassInput.text!!.isEmpty())
+                        confirmpassInput.error = "Konfirmasi Kata Sandi tidak boleh kosong!"
+                    else if (!Patterns.EMAIL_ADDRESS.matcher(emailInput.text.toString()).matches())
                     {
-                        Snackbar.make(
-                            binds.root,
-                            "Mohon isi semua data!",
-                            Snackbar.LENGTH_SHORT
-                        )
-                            .show()
+                        emailInput.error = "Email tidak valid!"
+                        emailInput.requestFocus()
                     }
                     else if (passwordInput.text.toString() != confirmpassInput.text.toString())
-                        Snackbar.make(
-                            binds.root,
-                            "Kata sandi tidak sama!",
-                            Snackbar.LENGTH_SHORT
-                        ).show()
+                    {
+                        passwordInput.error = "Kata sandi tidak sama!"
+                        confirmpassInput.error = "Kata sandi tidak sama!"
+                    }
+                    else if (passwordInput.text.toString().trim().length < 8 || confirmpassInput.text.toString().trim().length < 8)
+                    {
+                        passwordInput.error = "Kata sandi minimal 8 karakter!"
+                        confirmpassInput.error = "Kata sandi minimal 8 karakter!"
+                    }
+                    else if (usernameInput.text.toString().length < 6)
+                        usernameInput.error = "Username harus unik dan minimal 6 karakter!"
                     else
                     {
                         dataInsert(type, schoolId)
